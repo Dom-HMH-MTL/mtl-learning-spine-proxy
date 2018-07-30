@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>Test page</title>
+    </head>
+    <body>
+        <h1>List of Spine trees</h1>
+
+        <ul id="spineTrees"></ul>
+
+        <h1>Top node of spine tree 'math'</h1>
+
+        <ul id="spineElements"></ul>
+
+        <script type="module">
+            import { displaySpineTrees, displaySpineTreeElements } from './app/index.js';
+
+            (async function() {
+                await displaySpineTrees('spineTrees');
+                await displaySpineTreeElements('spineElements');
+            })();
+        </script>
+    </body>
+</html>

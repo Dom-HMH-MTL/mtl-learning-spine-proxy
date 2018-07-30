@@ -1,0 +1,17 @@
+{
+    "extends": "../tsconfig",
+    "compilerOptions": {
+        "module": "commonjs",
+        "rootDir": "../",
+        "outDir": "../../dist",
+        "moduleResolution": "node",
+        "paths": {
+            "@hmh/*": ["node_modules/@hmh/*"],
+            "aws-sdk": ["node_modules/aws-sdk"],
+            "aws-sdk/*": ["node_modules/aws-sdk/*"]
+        },
+        "types": ["intern", "node"],
+        "removeComments": false
+    },
+    "include": ["../../src/server-unit/**/*.ts", "../typings.d.ts"]
+}

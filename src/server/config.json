@@ -1,0 +1,29 @@
+{
+    "activeMode": "dev",
+    "dev": {
+        "NodeServer": {
+            "applicationFileFolder": "./dist/client",
+            "cacheControlStrategy": {
+                "static": "no-cache, private",
+                "api": "no-cache, private"
+            },
+            "defaultClientContentPath": "../../src/client/index.html",
+            "port": 8686,
+            "staticContentMaxAge": 0,
+            "staticFolderMapping": {}
+        }
+    },
+    "prod": {
+        "NodeServer": {
+            "applicationFileFolder": "./dist/client",
+            "cacheControlStrategy": {
+                "static": "public, immutable, max-age=3000000",
+                "api": "public, immutable, max-age=5"
+            },
+            "defaultClientContentPath": "../../src/client/index.html",
+            "port": 8686,
+            "staticContentMaxAge": 3000000,
+            "staticFolderMapping": {}
+        }
+    }
+}
