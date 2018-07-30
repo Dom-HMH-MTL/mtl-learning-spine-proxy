@@ -6,7 +6,10 @@
         "outDir": "../../dist/client",
         "noImplicitAny": false,
         "declaration": true,
-        "paths": { "reflect-metadata": ["node_modules/reflect-metadata/Reflect"] },
+        "paths": {
+            "@hmh/nodejs-base-server": ["node_modules/@hmh/nodejs-base-server/dist/client/index"],
+            "@hmh/*": ["node_modules/@hmh/*"]
+        },
         "lib": ["esnext", "dom"]
     },
     "include": ["../../src/client/**/*.ts", "../typings.d.ts"]

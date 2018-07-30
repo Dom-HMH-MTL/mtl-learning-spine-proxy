@@ -3,6 +3,8 @@
     "version": "1.0.0",
     "description": "Micro-service extracting information from the Learning Spibe Store and offering a granular REST API.",
     "main": "./dist/server/index.js",
+    "module": "dist/client/index.js",
+    "types": "dist/server/index.d.ts",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/hmhco/mtl-learning-spine-proxy.git"
@@ -41,9 +43,9 @@
         "init": "npm run _shareModelDefs; npm run _copyJson; npm run _firstCompilation",
         "_watchJson": "npm-watch _copyJson",
         "watch": "npm run init; concurrently --names 'server,client,s-unit, json ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm run _watchJson'",
-        "dev": "nodemon -r source-map-support/register dist/server/index.js --watch ./dist/server",
+        "dev": "nodemon -r source-map-support/register dist/server/server.js --watch ./dist/server",
         "debug": "nodemon --inspect -r source-map-support/register dist/server/server.js --watch ./dist/server",
-        "start": "node dist/server/index.js",
+        "start": "node dist/server/server.js",
         "test": "intern config=src/server-unit/intern.json",
         "test-polymer": "polymer test -l chrome -p",
         "lint": "tslint -t stylish -p src/tsconfig.json"

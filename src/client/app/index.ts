@@ -1,5 +1,5 @@
-import { Skill } from '../model/cc-proxy/Skill.js';
-import { SpineNode } from '../model/cc-proxy/SpineNode.js';
+import { Skill } from '../model/cc-proxy/Skill';
+import { SpineNode } from '../model/cc-proxy/SpineNode';
 import { SpineTree } from '../model/cc-proxy/SpineTree';
 
 export async function loadSpineTrees(): Promise<SpineTree[]> {
