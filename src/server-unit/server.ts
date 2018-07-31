@@ -1,3 +1,4 @@
+import { saveConfig } from '@hmh/nodejs-base-server';
 import intern from 'intern';
 
 import { Server } from '../server/server';
@@ -123,6 +124,7 @@ suite(__filename.substring(__filename.indexOf('/server-unit/') + '/server-unit/'
         };
         listenStub.withArgs(9876).returns(mockServer);
 
+        saveConfig(null); // To leave room for the mock config
         server.start();
 
         assert.isTrue(getTypedResourceDefinitionStub.calledOnce);
