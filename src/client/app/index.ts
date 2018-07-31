@@ -3,11 +3,16 @@ import { SpineNode } from '../model/cc-proxy/SpineNode';
 import { SpineTree } from '../model/cc-proxy/SpineTree';
 
 export async function loadSpineTrees(): Promise<SpineTree[]> {
-    return fetch('/api/v1/pou/SpineTree', { headers: { accept: 'application/json' }, method: 'GET' })
+    return fetch('/api/v1/cc-proxy/SpineTree', { headers: { accept: 'application/json' }, method: 'GET' })
         .then((response: Response): any => response.json())
         .then(
-            (item: any): SpineTree[] => {
-                return Object.assign(new SpineTree(), item);
+            (items: any[]): SpineTree[] => {
+                const spines: SpineTree[] = [];
+                for (const item of items) {
+                    spines.push(Object.assign(new SpineTree(), item));
+                }
+                return spines;
+                //                    return Object.assign(new SpineTree(), item);
             }
         );
 }
@@ -33,14 +38,16 @@ export async function loadSkill(id: string = 'root'): Promise<Skill> {
 }
 
 export async function displaySpineTrees(treeListId: string): Promise<void> {
-    // const spineTrees: SpineTree[] = await loadSpineTrees();
-    // const ul: HTMLElement = document.getElementById(treeListId);
-    // ul.className = 'spineTreeList';
-    // for (const tree of spineTrees) {
-    //     const li: HTMLElement = document.createElement('li');
-    //     li.appendChild(document.createTextNode(tree.name));
-    //     ul.appendChild(li);
-    // }
+    const spineTrees: SpineTree[] = await loadSpineTrees();
+
+    const ul: HTMLElement = document.getElementById(treeListId);
+    ul.className = 'spineTreeList';
+    for (const tree of spineTrees) {
+        const li: HTMLElement = document.createElement('li');
+        li.appendChild(document.createTextNode(tree.name));
+        li.appendChild(document.createTextNode(' (snapshot id:' + tree.snapshotId + ')'));
+        ul.appendChild(li);
+    }
 }
 
 export async function displaySpineTreeElements(elementListId: string, nodeId = 'root') {

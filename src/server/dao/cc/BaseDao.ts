@@ -5,7 +5,7 @@ import { Response } from 'node-fetch';
 import { SpineServiceApiInfo } from './SpineServiceApiInfo';
 
 export class BaseDao<T extends Model> extends BaseHttpDao<T> {
-    private apiInfo: SpineServiceApiInfo = new SpineServiceApiInfo('Math'); // Temporary limitation, until the list of supported `spineId` is exposed
+    protected apiInfo: SpineServiceApiInfo = new SpineServiceApiInfo('Math'); // Temporary limitation, until the list of supported `spineId` is exposed
 
     public async getServiceUrl(): Promise<string> {
         if (this.apiInfo.serviceUrl) {

@@ -4,4 +4,4 @@ export { SpineTree } from './model/cc-proxy/SpineTree';
 
 export { SkillResource } from './resource/cc-proxy/SkillResource';
 export { SpineNodeResource } from './resource/cc-proxy/SpineNodeResource';
-// export { SpineTreeResource } from './resource/cc-proxy/SpineTreeResource';
+export { SpineTreeResource } from './resource/cc-proxy/SpineTreeResource';
