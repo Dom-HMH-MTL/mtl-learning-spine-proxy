@@ -22,10 +22,9 @@ export class SpineDao extends BaseDao<Model> {
         return Promise.reject('Operation not supported!');
     }
 
-    public async query(filters: { [key: string]: any }): Promise<Model[]> {
+    public async query(): Promise<Model[]> {
         const serviceUrl = this.apiInfo.baseUrl;
         const fromHttp: Response = await this.getFromHttp(serviceUrl, {});
-
         if (fromHttp.ok) {
             const payload: Array<{ [key: string]: any }> = await fromHttp.json();
             const spines: Model[] = [];

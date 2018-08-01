@@ -26,8 +26,7 @@ export class SpineTreeDao extends BaseDao<Model> {
         return this.getSpine(id);
     }
 
-    public async query(filters: { [key: string]: any }): Promise<Model[]> {
-        console.log('spines', this.getSpines());
+    public async query(): Promise<Model[]> {
         return this.getSpines();
     }
     public async create(candidate: Model): Promise<string> {
@@ -40,7 +39,7 @@ export class SpineTreeDao extends BaseDao<Model> {
         return Promise.reject('Not implemented!');
     }
     private async populateSpines() {
-        const spines: Source[] = await this.spineDao.query({});
+        const spines: Source[] = await this.spineDao.query();
         for (const spine of spines) {
             this.spines.set(spine.spineId, new Model(spine));
         }
