@@ -16,6 +16,6 @@ export class SpineNodeResource extends BaseResource<Service> {
         super(Service.getInstance());
     }
     protected getServiceType(): string {
-        return 'pou';
+        return 'cc-proxy';
     }
 }

@@ -28,7 +28,7 @@ suite(
         test('getServiceType()', (): void => {
             const resource: Resource = Resource.getInstance();
             // @ts-ignore: access to protected method
-            assert.strictEqual(resource.getServiceType(), 'pou');
+            assert.strictEqual(resource.getServiceType(), 'cc-proxy');
         });
     }
 );

@@ -18,7 +18,7 @@ export async function loadSpineTrees(): Promise<SpineTree[]> {
 }
 
 export async function loadSpineNode(id: string = 'root'): Promise<SpineNode> {
-    return fetch('/api/v1/pou/SpineNode/' + id, { headers: { accept: 'application/json' }, method: 'GET' })
+    return fetch('/api/v1/cc-proxy/SpineNode/' + id, { headers: { accept: 'application/json' }, method: 'GET' })
         .then((response: Response): any => response.json())
         .then(
             (item: any): SpineNode => {
@@ -28,7 +28,7 @@ export async function loadSpineNode(id: string = 'root'): Promise<SpineNode> {
 }
 
 export async function loadSkill(id: string = 'root'): Promise<Skill> {
-    return fetch('/api/v1/pou/Skill/' + id, { headers: { accept: 'application/json' }, method: 'GET' })
+    return fetch('/api/v1/cc-proxy/Skill/' + id, { headers: { accept: 'application/json' }, method: 'GET' })
         .then((response: Response): any => response.json())
         .then(
             (item: any): Skill => {
