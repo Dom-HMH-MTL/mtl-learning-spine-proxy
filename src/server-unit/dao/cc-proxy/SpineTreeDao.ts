@@ -40,11 +40,11 @@ suite(
                     ];
                     const spineModels: Model[] = [new Model(spineSources[0])];
                     // @ts-ignore: access to private method
-                    const populateSpinesStub: SinonStub = stub(dao.spineDao, 'query').returns(spineSources);
+                    const daoQueryStub: SinonStub = stub(dao.spineDao, 'query').returns(spineSources);
                     // @ts-ignore: access to private attribute
                     assert.deepEqual(await dao.query(), spineModels);
-                    assert.isTrue(populateSpinesStub.calledOnce);
-                    populateSpinesStub.restore();
+                    assert.isTrue(daoQueryStub.calledOnce);
+                    daoQueryStub.restore();
                 });
                 test('failure', async (): Promise<void> => {
                     // @ts-ignore: access to private constructor
@@ -57,7 +57,7 @@ suite(
                         } as Model
                     ];
                     // @ts-ignore: access to private method
-                    spines.forEach((spine: Model) => dao.spines.set(spine.id, spine));
+                    spines.forEach((spine: Model) => dao.spines.push(spine));
                     // @ts-ignore: access to private attribute
                     assert.deepEqual(await dao.query(), spines);
                     // @ts-ignore: access to private method
@@ -67,52 +67,16 @@ suite(
                 });
             }
         );
-        suite(
-            'get',
-            (): void => {
-                test('success', async (): Promise<void> => {
-                    // @ts-ignore: access to private constructor
-                    const dao: DAO = new DAO();
-                    const spines: Model[] = [
-                        {
-                            id: 'id',
-                            name: 'name',
-                            snapshotId: 'snapshotId'
-                        } as Model
-                    ];
-                    // @ts-ignore: access to private method
-                    const populateSpinesStub: SinonStub = stub(dao, 'populateSpines').callsFake(
-                        (): void => {
-                            // @ts-ignore: access to private attribute
-                            spines.forEach((spine: Model) => dao.spines.set(spine.id, spine));
-                        }
-                    );
-                    // @ts-ignore: access to private attribute
-                    assert.deepEqual(await dao.get(spines[0].id), spines[0]);
-                    assert.isTrue(populateSpinesStub.calledOnce);
-                    populateSpinesStub.restore();
-                });
-                test('failure', async (): Promise<void> => {
-                    // @ts-ignore: access to private constructor
-                    const dao: DAO = new DAO();
-                    const spines: Model[] = [
-                        {
-                            id: 'id',
-                            name: 'name',
-                            snapshotId: 'snapshotId'
-                        } as Model
-                    ];
-                    // @ts-ignore: access to private method
-                    spines.forEach((spine: Model) => dao.spines.set(spine.id, spine));
-                    // @ts-ignore: access to private attribute
-                    assert.deepEqual(await dao.get(spines[0].id), spines[0]);
-                    // @ts-ignore: access to private method
-                    const populateSpinesStub: SinonStub = stub(dao.spineDao, 'query');
-                    assert.isTrue(populateSpinesStub.notCalled);
-                    populateSpinesStub.restore();
-                });
+        test('get', async (): Promise<void> => {
+            // @ts-ignore: access to private constructor
+            const dao: DAO = new DAO();
+            try {
+                await dao.get('');
+                assert.fail('Unexpected success!');
+            } catch (error) {
+                assert.strictEqual(error, 'Not implemented!');
             }
-        );
+        });
         test('create', async (): Promise<void> => {
             // @ts-ignore: access to private constructor
             const dao: DAO = new DAO();

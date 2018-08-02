@@ -44,8 +44,7 @@ export async function displaySpineTrees(treeListId: string): Promise<void> {
     ul.className = 'spineTreeList';
     for (const tree of spineTrees) {
         const li: HTMLElement = document.createElement('li');
-        li.appendChild(document.createTextNode(tree.name));
-        li.appendChild(document.createTextNode(' (snapshot id:' + tree.snapshotId + ')'));
+        li.appendChild(document.createTextNode(`${tree.name} (${tree.snapshotId})`));
         ul.appendChild(li);
     }
 }

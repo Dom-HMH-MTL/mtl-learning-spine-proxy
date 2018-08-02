@@ -14,16 +14,15 @@ export class SpineTreeDao extends BaseDao<Model> {
 
     private static instance: SpineTreeDao;
     private spineDao: ModelDAO;
-    private spines: Map<string, Model>;
+    private spines: Model[] = [];
 
     private constructor() {
         super(Model.getInstance());
-        this.spines = new Map();
         this.spineDao = ModelDAO.getInstance();
     }
 
     public async get(id: string, parameters?: { [key: string]: any }): Promise<Model> {
-        return this.getSpine(id);
+        return Promise.reject('Not implemented!');
     }
 
     public async query(): Promise<Model[]> {
@@ -38,24 +37,14 @@ export class SpineTreeDao extends BaseDao<Model> {
     public async delete(id: string): Promise<void> {
         return Promise.reject('Not implemented!');
     }
-    private async populateSpines() {
+    private async getSpines(): Promise<Model[]> {
+        if (this.spines.length !== 0) {
+            return this.spines;
+        }
         const spines: Source[] = await this.spineDao.query();
         for (const spine of spines) {
-            this.spines.set(spine.spineId, new Model(spine));
+            this.spines.push(new Model(spine));
         }
-    }
-    private async getSpine(id: string): Promise<Model> {
-        if (this.spines.has(id)) {
-            return this.spines.get(id);
-        }
-        await this.populateSpines();
-        return this.spines.get(id);
-    }
-    private async getSpines(): Promise<Model[]> {
-        if (this.spines.size !== 0) {
-            return Array.from(this.spines.values());
-        }
-        await this.populateSpines();
-        return Array.from(this.spines.values());
+        return this.spines;
     }
 }
