@@ -11,10 +11,11 @@ suite(
     (): void => {
         test('exported class list', (): void => {
             const resourceClasses: { [key: string]: typeof BaseResource } = resources as any;
-            assert.strictEqual(Object.keys(resourceClasses).length, 3);
+            assert.strictEqual(Object.keys(resourceClasses).length, 4);
             assert.isNotNull(resourceClasses.SkillGroupResource);
             assert.isNotNull(resourceClasses.SkillResource);
             assert.isNotNull(resourceClasses.SpineNodeResource);
+            assert.isNotNull(resourceClasses.SpineTreeResource);
         });
     }
 );
