@@ -1,4 +1,4 @@
-import { BaseDao } from '@hmh/nodejs-base-server';
+import { BaseDao, NotFoundException } from '@hmh/nodejs-base-server';
 import { SpineTree as Model } from '../../model/cc-proxy/SpineTree';
 import { Spine as Source } from '../../model/cc/Spine';
 import { SpineDao as ModelDAO } from '../cc/SpineDao';
@@ -21,8 +21,12 @@ export class SpineTreeDao extends BaseDao<Model> {
         this.spineDao = ModelDAO.getInstance();
     }
 
-    public async get(id: string, parameters?: { [key: string]: any }): Promise<Model> {
-        return Promise.reject('Not implemented!');
+    public async get(id: string): Promise<Model> {
+        const spine: Model = (await this.getSpines()).find((element: Model): boolean => element.id === id);
+        if (spine === undefined) {
+            throw new NotFoundException(`SpineTree with id '${id}' not found`);
+        }
+        return spine;
     }
 
     public async query(): Promise<Model[]> {

@@ -1,3 +1,4 @@
+import { NotFoundException } from '@hmh/nodejs-base-server';
 import intern from 'intern';
 import { SinonStub, stub } from 'sinon';
 import { SpineTreeDao as DAO } from '../../../server/dao/cc-proxy/SpineTreeDao';
@@ -56,27 +57,52 @@ suite(
                             snapshotId: 'snapshotId'
                         } as Model
                     ];
-                    // @ts-ignore: access to private method
+                    // @ts-ignore: access to private attribute
                     spines.forEach((spine: Model) => dao.spines.push(spine));
                     // @ts-ignore: access to private attribute
+                    const daoQueryStub: SinonStub = stub(dao.spineDao, 'query');
                     assert.deepEqual(await dao.query(), spines);
-                    // @ts-ignore: access to private method
-                    const populateSpinesStub: SinonStub = stub(dao.spineDao, 'query');
-                    assert.isTrue(populateSpinesStub.notCalled);
-                    populateSpinesStub.restore();
+                    assert.isTrue(daoQueryStub.notCalled);
+                    daoQueryStub.restore();
                 });
             }
         );
-        test('get', async (): Promise<void> => {
-            // @ts-ignore: access to private constructor
-            const dao: DAO = new DAO();
-            try {
-                await dao.get('');
-                assert.fail('Unexpected success!');
-            } catch (error) {
-                assert.strictEqual(error, 'Not implemented!');
+        suite(
+            'get',
+            (): void => {
+                test('success', async (): Promise<void> => {
+                    // @ts-ignore: access to private constructor
+                    const dao: DAO = new DAO();
+                    const spines: Model[] = [
+                        {
+                            id: 'id',
+                            name: 'name',
+                            snapshotId: 'snapshotId'
+                        } as Model
+                    ];
+                    // @ts-ignore: access to private method
+                    const getSpinesStub: SinonStub = stub(dao, 'getSpines').returns(spines);
+                    assert.deepEqual(await dao.get(spines[0].id), spines[0]);
+                    assert.isTrue(getSpinesStub.calledOnce);
+                    getSpinesStub.restore();
+                });
+                test('failure', async (): Promise<void> => {
+                    // @ts-ignore: access to private constructor
+                    const dao: DAO = new DAO();
+                    // @ts-ignore: access to private method
+                    const getSpinesStub: SinonStub = stub(dao, 'getSpines').returns([]);
+                    const id: string = 'id';
+                    try {
+                        await dao.get(id);
+                        assert.fail('Unexpected success!');
+                    } catch (error) {
+                        assert.isTrue(error instanceof NotFoundException);
+                        assert.strictEqual(error.message, `SpineTree with id '${id}' not found`);
+                    }
+                    getSpinesStub.restore();
+                });
             }
-        });
+        );
         test('create', async (): Promise<void> => {
             // @ts-ignore: access to private constructor
             const dao: DAO = new DAO();
