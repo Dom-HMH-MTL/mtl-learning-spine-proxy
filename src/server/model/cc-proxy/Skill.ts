@@ -14,10 +14,10 @@ export class Skill extends Parent {
     @readOnly() public prerequesites: string[];
     // @readOnly() public standards: object;
 
-    public constructor(source?: Source, parentId?: string) {
+    public constructor(snapshotId?: string, source?: Source, parentId?: string) {
         super();
-        if (source) {
-            this.id = source.id;
+        if (snapshotId && source) {
+            this.id = snapshotId + '@' + source.id;
             this.name = source.title;
             this.description = source.description;
             this.parentId = parentId;
