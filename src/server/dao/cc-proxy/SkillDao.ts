@@ -24,13 +24,11 @@ export class SkillDao extends BaseDao<Model> {
     }
 
     public async get(id: string, parameters?: { [key: string]: any }): Promise<Model> {
-        let snapshotId: string;
         if (!id.includes('@')) {
             throw new ClientErrorException('The parameter `spineTreeId` is required because the given identifier is not fully qualified!');
         }
-        snapshotId = id.substring(0, id.indexOf('@'));
-        id = id.substring(id.indexOf('@') + 1);
-        const skill: Model = await this.getSkill(snapshotId, id);
+        const [snapshotId, skillId] = id.split('@');
+        const skill: Model = await this.getSkill(snapshotId, skillId);
         if (!skill) {
             throw new NotFoundException(`Cannot get Skill of id '${id}'.`);
         }

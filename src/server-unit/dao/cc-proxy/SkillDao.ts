@@ -49,7 +49,7 @@ suite(
                 assert.fail('Unexpected success!');
             } catch (error) {
                 assert.isTrue(error instanceof NotFoundException);
-                assert.strictEqual(error.message, `Cannot get Skill of id '${'unknown'}'.`);
+                assert.strictEqual(error.message, `Cannot get Skill of id '${'unknown@unknown'}'.`);
             }
             getSkillStub.restore();
         });
