@@ -53,8 +53,7 @@ suite(
                     const spines: Model[] = [
                         {
                             id: 'id',
-                            name: 'name',
-                            snapshotId: 'snapshotId'
+                            name: 'name'
                         } as Model
                     ];
                     // @ts-ignore: access to private attribute
@@ -76,8 +75,7 @@ suite(
                     const spines: Model[] = [
                         {
                             id: 'id',
-                            name: 'name',
-                            snapshotId: 'snapshotId'
+                            name: 'name'
                         } as Model
                     ];
                     // @ts-ignore: access to private method

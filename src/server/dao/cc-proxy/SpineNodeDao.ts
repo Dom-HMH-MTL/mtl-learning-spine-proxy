@@ -30,11 +30,11 @@ export class SpineNodeDao extends BaseDao<Model> {
     public async get(id: string, parameters?: { [key: string]: any }): Promise<Model> {
         let snapshotId: string;
         if (!id.includes('@')) {
-            if (!parameters.spineTreeId) {
+            if (!parameters || !parameters.spineTreeId) {
                 throw new ClientErrorException('The parameter `spineTreeId` is required because the given identifier is not fully qualified!');
             }
             snapshotId = parameters.spineTreeId;
-            id += '@' + snapshotId;
+            id = snapshotId + '@' + id;
         } else {
             snapshotId = id.substring(0, id.indexOf('@'));
         }
@@ -73,7 +73,7 @@ export class SpineNodeDao extends BaseDao<Model> {
     private spreadRoot(snapshotId: string, root: Source): Map<string, Model> {
         const model = new Model(snapshotId, root);
         const accumulator: Map<string, Model> = new Map();
-        accumulator.set('root@' + snapshotId, model);
+        accumulator.set(snapshotId + '@root', model);
         accumulator.set(model.id, model);
         const dependencies: Map<string, Model> = this.spreadGroups(snapshotId, model.id, root.children, 1);
         for (const dependencyId of dependencies.keys()) {

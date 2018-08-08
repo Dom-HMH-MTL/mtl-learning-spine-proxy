@@ -1,6 +1,6 @@
 import { BaseModel } from '@hmh/nodejs-base-server';
 import intern from 'intern';
-import { Headers, Response } from 'node-fetch';
+import { Response } from 'node-fetch';
 import { SinonStub, stub } from 'sinon';
 import { BaseDao as DAO } from '../../../server/dao/cc/BaseDao';
 import { SpineServiceApiInfo } from '../../../server/dao/cc/SpineServiceApiInfo';
@@ -38,7 +38,7 @@ suite(
                     getServiceUrlStub.withArgs().returns(Promise.resolve('//url/'));
                     // @ts-ignore: access to private method
                     const getFromHttpStub: SinonStub = stub(dao, 'getFromHttp');
-                    const parameters: { [key: string]: any } = {};
+                    const parameters: { [key: string]: any } = { snapshotId: '123456789' };
                     getFromHttpStub.withArgs('//url/testmodel/id', parameters).returns({
                         json: async (): Promise<any> => {
                             return Promise.resolve({ id: 'id' });
@@ -83,44 +83,20 @@ suite(
         suite(
             'getServiceUrl',
             (): void => {
-                const apiInfo: SpineServiceApiInfo = new SpineServiceApiInfo('Math'); // Temporary limitation, until the list of supported `spineId` is exposed
-                const serviceUrl = apiInfo.baseUrl + '/ref/' + apiInfo.defaultSpineId + '/current/';
+                const apiInfo: SpineServiceApiInfo = new SpineServiceApiInfo();
+                const serviceUrl = apiInfo.baseUrl + '/snapshot/' + '123456789/';
 
                 test('success', async (): Promise<void> => {
                     const dao: TestDao = new TestDao();
-                    // @ts-ignore: access to private method
-                    const getFromHttpStub: SinonStub = stub(dao, 'getFromHttp');
-                    getFromHttpStub.withArgs(serviceUrl + 'skillgroup?depth=0&skillDetailLevel=none').returns({
-                        headers: {
-                            get: (key: string): string => {
-                                if (key === 'X-Version-Snapshot') {
-                                    return '123456789';
-                                }
-                                throw new Error(`Unexpected call to headers.get() with key: ${key}!`);
-                            }
-                        } as Headers,
-                        ok: true
-                    } as Response);
-
-                    const url: string = await dao.getServiceUrl();
+                    const url: string = await dao.getServiceUrl('123456789');
                     assert.strictEqual(url, apiInfo.baseUrl + '/snapshot/123456789/');
-                    assert.strictEqual(await dao.getServiceUrl(), url);
-
-                    assert.isTrue(getFromHttpStub.calledOnce);
-                    getFromHttpStub.restore();
+                    assert.strictEqual(await dao.getServiceUrl('123456789'), url);
                 });
                 test('failure', async (): Promise<void> => {
                     const dao: TestDao = new TestDao();
-                    // @ts-ignore: access to private method
-                    const getFromHttpStub: SinonStub = stub(dao, 'getFromHttp');
-                    getFromHttpStub.withArgs(serviceUrl + 'skillgroup?depth=0&skillDetailLevel=none').returns({ ok: false } as Response);
-
-                    const url: string = await dao.getServiceUrl();
+                    const url: string = await dao.getServiceUrl('123456789');
                     assert.strictEqual(url, serviceUrl);
-                    assert.strictEqual(await dao.getServiceUrl(), url);
-
-                    assert.isTrue(getFromHttpStub.calledOnce);
-                    getFromHttpStub.restore();
+                    assert.strictEqual(await dao.getServiceUrl('123456789'), url);
                 });
             }
         );

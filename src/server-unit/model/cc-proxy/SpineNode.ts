@@ -37,11 +37,11 @@ suite(
                         skills: [{} as Skill],
                         taxonomyPathElement: { title: 'title' }
                     } as SkillGroup;
-                    const entity: Entity = new Entity(bootstrap, 2, '1-domain');
+                    const entity: Entity = new Entity('snapshotId', bootstrap, 2, '1-domain');
                     assert.deepEqual(entity.childrenIds, []);
                     assert.strictEqual(entity.childrenNb, 2);
                     assert.strictEqual(entity.discipline, 'discipline');
-                    assert.strictEqual(entity.id, '2-id');
+                    assert.strictEqual(entity.id, 'snapshotId@2-id');
                     assert.strictEqual(entity.name, 'title');
                     assert.strictEqual(entity.parentId, '1-domain');
                     assert.deepEqual(entity.skillIds, []);
@@ -55,11 +55,11 @@ suite(
                         skills: [{} as Skill],
                         taxonomyPathElement: { title: 'title' }
                     } as SkillGroup;
-                    const entity: Entity = new Entity(bootstrap, 2, '1-domain');
+                    const entity: Entity = new Entity('snapshotId', bootstrap, 2, '1-domain');
                     assert.deepEqual(entity.childrenIds, []);
                     assert.strictEqual(entity.childrenNb, 1);
                     assert.strictEqual(entity.discipline, 'discipline');
-                    assert.strictEqual(entity.id, '2-id');
+                    assert.strictEqual(entity.id, 'snapshotId@2-id');
                     assert.strictEqual(entity.name, 'title');
                     assert.strictEqual(entity.parentId, '1-domain');
                     assert.deepEqual(entity.skillIds, []);
@@ -67,11 +67,11 @@ suite(
                 });
                 test('constructor w/ payload and no skills array, no title', (): void => {
                     const bootstrap: SkillGroup = { children: [{} as SkillGroup], discipline: 'discipline', id: 'id' } as SkillGroup;
-                    const entity: Entity = new Entity(bootstrap, 2, '1-domain');
+                    const entity: Entity = new Entity('snapshotId', bootstrap, 2, '1-domain');
                     assert.deepEqual(entity.childrenIds, []);
                     assert.strictEqual(entity.childrenNb, 1);
                     assert.strictEqual(entity.discipline, 'discipline');
-                    assert.strictEqual(entity.id, '2-id');
+                    assert.strictEqual(entity.id, 'snapshotId@2-id');
                     assert.isUndefined(entity.name);
                     assert.strictEqual(entity.parentId, '1-domain');
                     assert.deepEqual(entity.skillIds, []);

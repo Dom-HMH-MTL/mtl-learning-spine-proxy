@@ -13,7 +13,7 @@ export class BaseDao<T extends Model> extends BaseHttpDao<T> {
 
     public async get(id: string, parameters?: { [key: string]: any }): Promise<T> {
         const endPoint = (await this.getServiceUrl(parameters.snapshotId)) + this.modelName.toLowerCase() + '/' + id;
-        console.log('Reaching Learning Spine Store at URL:', endPoint);
+        // console.log('Reaching Learning Spine Store at URL:', endPoint);
         const fromHttp: Response = await this.getFromHttp(endPoint, parameters);
 
         if (fromHttp.ok) {

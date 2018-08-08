@@ -67,6 +67,6 @@ export class SkillDao extends BaseDao<Model> {
         const depth: number = skill.spineContext.length;
         const parentId: string = depth - 1 + '-' + skill.spineContext[depth - 1].groupId;
         this.registerSkill(spineTreeId, skill, parentId);
-        return this.skills.get(id);
+        return this.skills.get(spineTreeId + '@' + id);
     }
 }
