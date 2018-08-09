@@ -2,17 +2,16 @@
     "extends": "../tsconfig",
     "compilerOptions": {
         "module": "esnext",
-        "rootDir": "./",
-        "outDir": "../../dist/client",
+        "rootDir": "../",
+        "outDir": "../../dist",
         "noImplicitAny": false,
-        "declaration": true,
+        "lib": ["esnext", "dom"],
         "paths": {
             "@hmh/nodejs-base-server": ["node_modules/@hmh/nodejs-base-server/dist/client/index"],
             "@hmh/*": ["node_modules/@hmh/*"],
             "@polymer/*": ["node_modules/@polymer/*"],
             "lit-html/*": ["node_modules/lit-html/*"]
-        },
-        "lib": ["esnext", "dom"]
+        }
     },
-    "include": ["../../src/client/**/*.ts", "../typings.d.ts"]
+    "include": ["../../src/client-unit/**/*.ts", "../typings.d.ts"]
 }

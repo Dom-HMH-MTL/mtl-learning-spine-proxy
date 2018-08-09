@@ -1,5 +1,5 @@
 {
-    "name": "learning-spine-proxy",
+    "name": "@hmh/learning-spine-proxy",
     "version": "1.0.0",
     "description": "Micro-service extracting information from the Learning Spibe Store and offering a granular REST API.",
     "main": "./dist/server/index.js",
@@ -16,7 +16,11 @@
         "registry": "http://npm.tribalnova.com"
     },
     "dependencies": {
+        "@polymer/polymer": "latest",
         "@hmh/nodejs-base-server": "latest",
+        "@polymer/lit-element": "latest",
+        "@material/checkbox": "latest",
+        "@material/form-field": "latest",
         "node-fetch": "latest"
     },
     "devDependencies": {
@@ -30,7 +34,14 @@
         "sinon": "latest",
         "source-map-support": "latest",
         "tslint": "latest",
-        "typescript": "latest"
+        "@polymer/iron-component-page": "next",
+        "@polymer/iron-demo-helpers": "latest",
+        "polymer-cli": "latest",
+        "@webcomponents/webcomponentsjs": "^2.0.2",
+        "growl": "^1.10.5",
+        "node-sass": "^4.9.0",
+        "typescript": "^2.9.2",
+        "wct-browser-legacy": "^1.0.0"
     },
     "watch": {
         "_copyJson": "src/server/config.json"
@@ -41,13 +52,15 @@
         "_copyJson": "cp ./src/server/config.json ./dist/server",
         "_firstCompilation": "tsc -p ./src/server; tsc -p ./src/client; tsc -p ./src/server-unit; tsc -p ./src/client-unit",
         "init": "npm run _shareModelDefs; npm run _copyJson; npm run _firstCompilation",
-        "_watchJson": "npm-watch _copyJson",
-        "watch": "npm run init; concurrently --names 'server,client,s-unit, json ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm run _watchJson'",
+        "watch": "npm run init; concurrently --names 'server,client,s-unit, json ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm run _watchSass'",
         "dev": "nodemon -r source-map-support/register dist/server/server.js --watch ./dist/server",
         "debug": "nodemon --inspect -r source-map-support/register dist/server/server.js --watch ./dist/server",
-        "start": "node dist/server/server.js",
+        "start": "concurrently 'node dist/server/server.js' 'npm run _sass-material' ' polymer analyze ./dist/ > analysis.json'",
         "test": "intern config=src/server-unit/intern.json",
         "test-polymer": "polymer test -l chrome -p",
-        "lint": "tslint -t stylish -p src/tsconfig.json"
+        "lint": "tslint -t stylish -p src/tsconfig.json",
+        "_watchSass": "npm run _sass -- -w",
+        "_sass-material": "node-sass --include-path=node_modules node_modules/@material/ -r -o dist/client/components/css",
+        "_sass": "node-sass src/-r -o dist/"
     }
 }
