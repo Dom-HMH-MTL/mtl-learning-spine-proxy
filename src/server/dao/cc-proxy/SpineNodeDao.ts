@@ -1,4 +1,4 @@
-import { BaseDao } from '@hmh/nodejs-base-server';
+import { BaseDao, ClientErrorException } from '@hmh/nodejs-base-server';
 import { SpineNode as Model } from '../../model/cc-proxy/SpineNode';
 import { SkillGroup as Source } from '../../model/cc/SkillGroup';
 import { SkillRootGroup } from '../../model/cc/SkillRootGroup';
@@ -18,16 +18,27 @@ export class SpineNodeDao extends BaseDao<Model> {
 
     private skillRootGroupDao: SkillRootGroupDao;
     private skillDao: SkillDao;
-    private nodes: Map<string, Model>;
+    private nodesOfASpine: Map<string, Map<string, Model>>;
 
     private constructor() {
         super(Model.getInstance());
         this.skillRootGroupDao = SkillRootGroupDao.getInstance();
         this.skillDao = SkillDao.getInstance();
+        this.nodesOfASpine = new Map();
     }
 
     public async get(id: string, parameters?: { [key: string]: any }): Promise<Model> {
-        return this.getNodes().then((nodes: Map<string, Model>): Model => nodes.get(id));
+        let snapshotId: string;
+        if (!id.includes('@')) {
+            if (!parameters || !parameters.spineTreeId) {
+                throw new ClientErrorException('The parameter `spineTreeId` is required because the given identifier is not fully qualified!');
+            }
+            snapshotId = parameters.spineTreeId;
+            id = snapshotId + '@' + id;
+        } else {
+            snapshotId = id.substring(0, id.indexOf('@'));
+        }
+        return this.getNodes(snapshotId).then((nodes: Map<string, Model>): Model => nodes.get(id));
     }
 
     public async query(filters: { [key: string]: any }): Promise<Model[]> {
@@ -43,14 +54,14 @@ export class SpineNodeDao extends BaseDao<Model> {
         return Promise.reject('Not implemented!');
     }
 
-    private spreadGroups(parentNodeId: string, groups: Source[], depth: number): Map<string, Model> {
+    private spreadGroups(snapshotId: string, parentNodeId: string, groups: Source[], depth: number): Map<string, Model> {
         const accumulator: Map<string, Model> = new Map();
         for (const group of groups) {
-            const model = new Model(group, depth, parentNodeId);
+            const model = new Model(snapshotId, group, depth, parentNodeId);
             accumulator.set(model.id, model);
-            const dependencies: Map<string, Model> = this.spreadGroups(model.id, group.children, depth + 1);
+            const dependencies: Map<string, Model> = this.spreadGroups(snapshotId, model.id, group.children, depth + 1);
             for (const dependencyId of dependencies.keys()) {
-                if (dependencyId.startsWith(depth + 1 + '-')) {
+                if (dependencyId.startsWith(snapshotId + '@' + (depth + 1) + '-')) {
                     model.childrenIds.push(dependencyId);
                 }
                 accumulator.set(dependencyId, dependencies.get(dependencyId));
@@ -59,14 +70,14 @@ export class SpineNodeDao extends BaseDao<Model> {
         return accumulator;
     }
 
-    private spreadRoot(root: Source): Map<string, Model> {
-        const model = new Model(root);
+    private spreadRoot(snapshotId: string, root: Source): Map<string, Model> {
+        const model = new Model(snapshotId, root);
         const accumulator: Map<string, Model> = new Map();
-        accumulator.set('root', model);
+        accumulator.set(snapshotId + '@root', model);
         accumulator.set(model.id, model);
-        const dependencies: Map<string, Model> = this.spreadGroups(model.id, root.children, 1);
+        const dependencies: Map<string, Model> = this.spreadGroups(snapshotId, model.id, root.children, 1);
         for (const dependencyId of dependencies.keys()) {
-            if (dependencyId.startsWith('1-')) {
+            if (dependencyId.startsWith(snapshotId + '@1-')) {
                 model.childrenIds.push(dependencyId);
             }
             accumulator.set(dependencyId, dependencies.get(dependencyId));
@@ -74,26 +85,29 @@ export class SpineNodeDao extends BaseDao<Model> {
         return accumulator;
     }
 
-    private dispatchSkills(node: Source, depth: number = 0): void {
+    private dispatchSkills(snapshotId: string, node: Source, depth: number = 0): void {
         if (node.skills) {
             for (const skill of node.skills) {
-                const nodeId: string = depth + '-' + node.id;
-                this.skillDao.registerSkill(skill, nodeId);
-                this.nodes.get(nodeId).skillIds.push(skill.id);
+                const nodeId: string = snapshotId + '@' + depth + '-' + node.id;
+                this.skillDao.registerSkill(snapshotId, skill, nodeId);
+                this.nodesOfASpine
+                    .get(snapshotId)
+                    .get(nodeId)
+                    .skillIds.push(snapshotId + '@' + skill.id);
             }
         }
         for (const child of node.children) {
-            this.dispatchSkills(child, depth + 1);
+            this.dispatchSkills(snapshotId, child, depth + 1);
         }
     }
 
-    private async getNodes(): Promise<Map<string, Model>> {
-        if (this.nodes) {
-            return this.nodes;
+    private async getNodes(spineTreeId: string): Promise<Map<string, Model>> {
+        if (this.nodesOfASpine.get(spineTreeId)) {
+            return this.nodesOfASpine.get(spineTreeId);
         }
-        const rootSkillGroup: SkillRootGroup = await this.skillRootGroupDao.get('root', { depth: 10, skillDetailLevel: 'high' });
-        this.nodes = this.spreadRoot(rootSkillGroup.group);
-        this.dispatchSkills(rootSkillGroup.group);
-        return this.nodes;
+        const rootSkillGroup: SkillRootGroup = await this.skillRootGroupDao.get('root', { snapshotId: spineTreeId, depth: 10, skillDetailLevel: 'high' });
+        this.nodesOfASpine.set(spineTreeId, this.spreadRoot(spineTreeId, rootSkillGroup.group));
+        this.dispatchSkills(spineTreeId, rootSkillGroup.group);
+        return this.nodesOfASpine.get(spineTreeId);
     }
 }

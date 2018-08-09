@@ -8,13 +8,11 @@ export class SpineTree extends Parent {
     }
 
     @readOnly() public name: string;
-    @readOnly() public snapshotId: string;
     public constructor(source?: Source) {
         super();
         if (source) {
-            this.id = source.spineId;
+            this.id = source.versionId;
             this.name = source.title;
-            this.snapshotId = source.versionId;
         }
     }
 }

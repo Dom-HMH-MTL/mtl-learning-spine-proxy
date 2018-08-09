@@ -19,7 +19,6 @@ suite(
                     const entity: Entity = new Entity();
                     assert.isUndefined(entity.id);
                     assert.isUndefined(entity.name);
-                    assert.isUndefined(entity.snapshotId);
                 });
                 test('constructor w/ payload fully documented', (): void => {
                     const bootstrap: Source = {
@@ -28,8 +27,7 @@ suite(
                         versionId: 'versionId'
                     } as Source;
                     const entity: Entity = new Entity(bootstrap);
-                    assert.strictEqual(entity.snapshotId, 'versionId');
-                    assert.strictEqual(entity.id, 'id');
+                    assert.strictEqual(entity.id, 'versionId');
                     assert.strictEqual(entity.name, 'name');
                 });
             }

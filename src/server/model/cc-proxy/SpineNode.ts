@@ -15,11 +15,11 @@ export class SpineNode extends Parent {
     @readOnly() public skillIds: string[];
     @readOnly() public skillNb: number;
 
-    public constructor(source?: Source, depth: number = 0, parentId: string = null) {
+    public constructor(snapshotId?: string, source?: Source, depth: number = 0, parentId: string = null) {
         super();
-        if (source) {
+        if (source && snapshotId) {
             // @ts-ignore: access to a parent attribute which TSC does NOT see defined :( It's maybe related to the parent definition located in a NPM module and TSC...
-            this.id = depth + '-' + source.id;
+            this.id = snapshotId + '@' + depth + '-' + source.id;
             this.parentId = parentId;
             if (source.taxonomyPathElement) {
                 this.name = source.taxonomyPathElement.title;

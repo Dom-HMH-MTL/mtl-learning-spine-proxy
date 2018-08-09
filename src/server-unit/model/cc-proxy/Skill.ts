@@ -33,9 +33,9 @@ suite(
                         prerequisites: [{ skillId: 'pre-id' } as SkillReference],
                         title: 'name'
                     } as Source;
-                    const entity: Entity = new Entity(bootstrap, '1-domain');
+                    const entity: Entity = new Entity('snapshotId', bootstrap, '1-domain');
                     assert.strictEqual(entity.description, 'description');
-                    assert.strictEqual(entity.id, 'id');
+                    assert.strictEqual(entity.id, 'snapshotId@id');
                     assert.strictEqual(entity.name, 'name');
                     assert.strictEqual(entity.parentId, '1-domain');
                     assert.deepEqual(entity.postrequesites, ['post-id']);
@@ -47,9 +47,9 @@ suite(
                         id: 'id',
                         title: 'name'
                     } as Source;
-                    const entity: Entity = new Entity(bootstrap, '1-domain');
+                    const entity: Entity = new Entity('snapshotId', bootstrap, '1-domain');
                     assert.strictEqual(entity.description, 'description');
-                    assert.strictEqual(entity.id, 'id');
+                    assert.strictEqual(entity.id, 'snapshotId@id');
                     assert.strictEqual(entity.name, 'name');
                     assert.strictEqual(entity.parentId, '1-domain');
                     assert.isUndefined(entity.postrequesites);

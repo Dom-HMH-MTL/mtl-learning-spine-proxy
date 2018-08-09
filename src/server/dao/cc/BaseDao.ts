@@ -5,28 +5,15 @@ import { Response } from 'node-fetch';
 import { SpineServiceApiInfo } from './SpineServiceApiInfo';
 
 export class BaseDao<T extends Model> extends BaseHttpDao<T> {
-    protected apiInfo: SpineServiceApiInfo = new SpineServiceApiInfo('Math'); // Temporary limitation, until the list of supported `spineId` is exposed
+    protected apiInfo: SpineServiceApiInfo = new SpineServiceApiInfo(); // Temporary limitation, until the list of supported `spineId` is exposed
 
-    public async getServiceUrl(): Promise<string> {
-        if (this.apiInfo.serviceUrl) {
-            return this.apiInfo.serviceUrl;
-        }
-        // Any endpoint will publish the `X-Version-Snapshot` piece of information
-        const defaultServiceUrl = this.apiInfo.baseUrl + '/ref/' + this.apiInfo.defaultSpineId + '/current/';
-        const queryOptions = '?depth=0&skillDetailLevel=none';
-        const fromHttp: Response = await this.getFromHttp(defaultServiceUrl + 'skillgroup' + queryOptions);
-
-        if (fromHttp.ok) {
-            const apiVersion: string = fromHttp.headers.get('X-Version-Snapshot');
-            this.apiInfo.serviceUrl = this.apiInfo.baseUrl + '/snapshot/' + apiVersion + '/';
-        } else {
-            this.apiInfo.serviceUrl = defaultServiceUrl;
-        }
-        return this.apiInfo.serviceUrl;
+    public async getServiceUrl(snapshotId: string): Promise<string> {
+        return this.apiInfo.baseUrl + '/snapshot/' + snapshotId + '/';
     }
 
     public async get(id: string, parameters?: { [key: string]: any }): Promise<T> {
-        const endPoint = (await this.getServiceUrl()) + this.modelName.toLowerCase() + '/' + id;
+        const endPoint = (await this.getServiceUrl(parameters.snapshotId)) + this.modelName.toLowerCase() + '/' + id;
+        // console.log('Reaching Learning Spine Store at URL:', endPoint);
         const fromHttp: Response = await this.getFromHttp(endPoint, parameters);
 
         if (fromHttp.ok) {

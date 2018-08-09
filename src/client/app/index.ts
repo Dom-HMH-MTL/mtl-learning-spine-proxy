@@ -17,8 +17,8 @@ export async function loadSpineTrees(): Promise<SpineTree[]> {
         );
 }
 
-export async function loadSpineNode(id: string = 'root'): Promise<SpineNode> {
-    return fetch('/api/v1/cc-proxy/SpineNode/' + id, { headers: { accept: 'application/json' }, method: 'GET' })
+export async function loadSpineNode(spineTreeId: string, id: string = 'root'): Promise<SpineNode> {
+    return fetch('/api/v1/cc-proxy/SpineNode/' + id + '?spineTreeId=' + spineTreeId, { headers: { accept: 'application/json' }, method: 'GET' })
         .then((response: Response): any => response.json())
         .then(
             (item: any): SpineNode => {
@@ -44,13 +44,13 @@ export async function displaySpineTrees(treeListId: string): Promise<void> {
     ul.className = 'spineTreeList';
     for (const tree of spineTrees) {
         const li: HTMLElement = document.createElement('li');
-        li.appendChild(document.createTextNode(`${tree.name} (${tree.snapshotId})`));
+        li.appendChild(document.createTextNode(`${tree.name} (${tree.id})`));
         ul.appendChild(li);
     }
 }
 
-export async function displaySpineTreeElements(elementListId: string, nodeId = 'root') {
-    const spineNode: SpineNode = await loadSpineNode(nodeId);
+export async function displaySpineTreeElements(elementListId: string, spineTreeId: string, nodeId = 'root') {
+    const spineNode: SpineNode = await loadSpineNode(spineTreeId, nodeId);
     const ul: HTMLElement = document.getElementById(elementListId);
     const li: HTMLElement = document.createElement('li');
     li.appendChild(document.createTextNode(spineNode.name));
@@ -61,7 +61,7 @@ export async function displaySpineTreeElements(elementListId: string, nodeId = '
         innerUl.id = 'node-' + childId;
         innerUl.className = 'spineNodeList';
         ul.appendChild(innerUl);
-        await displaySpineTreeElements('node-' + childId, childId);
+        await displaySpineTreeElements('node-' + childId, '', childId); // No need to convey the snapshotId because it is contained into the child id
     }
 
     if (0 < spineNode.skillIds.length) {
