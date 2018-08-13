@@ -1,6 +1,6 @@
-import { Skill } from '../model/cc-proxy/Skill';
-import { SpineNode } from '../model/cc-proxy/SpineNode';
-import { SpineTree } from '../model/cc-proxy/SpineTree';
+import { Skill } from './model/cc-proxy/Skill';
+import { SpineNode } from './model/cc-proxy/SpineNode';
+import { SpineTree } from './model/cc-proxy/SpineTree';
 
 export async function loadSpineTrees(): Promise<SpineTree[]> {
     return fetch('/api/v1/cc-proxy/SpineTree', { headers: { accept: 'application/json' }, method: 'GET' })

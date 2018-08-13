@@ -1,7 +1,7 @@
 {
-    "name": "learning-spine-proxy",
+    "name": "@hmh/learning-spine-proxy",
     "version": "1.0.0",
-    "description": "Micro-service extracting information from the Learning Spibe Store and offering a granular REST API.",
+    "description": "Micro-service extracting information from the Learning Spine Store and offering a granular REST API.",
     "main": "./dist/server/index.js",
     "module": "dist/client/index.js",
     "types": "dist/server/index.d.ts",
@@ -16,7 +16,11 @@
         "registry": "http://npm.tribalnova.com"
     },
     "dependencies": {
+        "@polymer/polymer": "latest",
         "@hmh/nodejs-base-server": "latest",
+        "@polymer/lit-element": "latest",
+        "@material/checkbox": "latest",
+        "@material/form-field": "latest",
         "node-fetch": "latest"
     },
     "devDependencies": {
@@ -30,19 +34,31 @@
         "sinon": "latest",
         "source-map-support": "latest",
         "tslint": "latest",
-        "typescript": "latest"
+        "@polymer/iron-component-page": "next",
+        "@polymer/iron-demo-helpers": "latest",
+        "polymer-cli": "latest",
+        "@webcomponents/webcomponentsjs": "^2.0.2",
+        "growl": "^1.10.5",
+        "node-sass": "^4.9.0",
+        "reflect-metadata": "latest",
+        "typescript": "^2.9.2",
+        "wct-browser-legacy": "^1.0.0"
     },
     "watch": {
-        "_copyJson": "src/server/config.json"
+        "_copyHtml": "src/client/components/demos/*.*",
+        "_copyJson": "src/server/config.json",
+        "_generateDocs": "src/client/components/**/*.*"
     },
     "scripts": {
         "clean": "rm -rf node_modules dist package-lock.json",
         "_shareModelDefs": "mkdir dist; mkdir dist/server; pushd ./src/client; ln -s ../server/model/ .; popd",
-        "_copyJson": "cp ./src/server/config.json ./dist/server",
+        "_makeDemosFolder": "mkdir dist; mkdir dist/client; mkdir dist/client/components; mkdir dist/client/components/demos",
+        "_copyHtml": "cp src/client/components/demos/*.html dist/client/components/demos",
+        "_copyJson": "cp src/server/config.json dist/server",
+        "_generateDocs": "polymer analyze ./dist/client/ > ./dist/client/components/analysis.json",
         "_firstCompilation": "tsc -p ./src/server; tsc -p ./src/client; tsc -p ./src/server-unit; tsc -p ./src/client-unit",
-        "init": "npm run _shareModelDefs; npm run _copyJson; npm run _firstCompilation",
-        "_watchJson": "npm-watch _copyJson",
-        "watch": "npm run init; concurrently --names 'server,client,s-unit, json ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm run _watchJson'",
+        "init": "npm run _shareModelDefs; npm run _download-bedrock-cert; npm run _copyJson; npm run _firstCompilation; npm run _makeDemosFolder",
+        "watch": "npm run init; concurrently --names 'server,client,s-unit, json ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan' 'tsc -p src/server --watch' 'tsc -p src/client --watch' 'tsc -p src/server-unit --watch' 'npm-watch'",
         "dev": "nodemon -r source-map-support/register dist/server/server.js --watch ./dist/server",
         "debug": "nodemon --inspect -r source-map-support/register dist/server/server.js --watch ./dist/server",
         "start": "node dist/server/server.js",

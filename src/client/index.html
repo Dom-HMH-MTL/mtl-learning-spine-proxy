@@ -1,26 +1,27 @@
+<!doctype html>
 <html>
 
 <head>
-    <title>Test page</title>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" />
+  <title>learning-spine-browser</title>
+  <script src="/node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+  <script type="module" src="/node_modules/@polymer/iron-component-page/iron-component-page.js"></script>
 </head>
 
 <body>
-    <h1>List of Spine trees</h1>
-
-    <ul id="spineTrees"></ul>
-
-    <h1>Top node of one spine tree</h1>
-
-    <ul id="spineElements"></ul>
-
-    <script type="module">
+  <script type="module">
+    import './components/learning-spine-browser.js'
+        /*
         import { displaySpineTrees, displaySpineTreeElements } from './app/index.js';
 
         (async function () {
             await displaySpineTrees('spineTrees');
             await displaySpineTreeElements('spineElements', 'Lx5dbX58EIxwGYCtIIv-Wi-Hk4QA');
-        })();
-    </script>
+        })();*/
+  </script>
+  <iron-component-page descriptor-url="./components/analysis.json"></iron-component-page>
+
 </body>
 
 </html>
