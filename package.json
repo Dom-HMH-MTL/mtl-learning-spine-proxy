@@ -1,7 +1,7 @@
 {
     "name": "@hmh/learning-spine-proxy",
     "version": "1.0.0",
-    "description": "Micro-service extracting information from the Learning Spibe Store and offering a granular REST API.",
+    "description": "Micro-service extracting information from the Learning Spine Store and offering a granular REST API.",
     "main": "./dist/server/index.js",
     "module": "dist/client/index.js",
     "types": "dist/server/index.d.ts",
@@ -40,27 +40,30 @@
         "@webcomponents/webcomponentsjs": "^2.0.2",
         "growl": "^1.10.5",
         "node-sass": "^4.9.0",
+        "reflect-metadata": "latest",
         "typescript": "^2.9.2",
         "wct-browser-legacy": "^1.0.0"
     },
     "watch": {
-        "_copyJson": "src/server/config.json"
+        "_copyHtml": "src/client/components/demos/*.*",
+        "_copyJson": "src/server/config.json",
+        "_generateDocs": "src/client/components/**/*.*"
     },
     "scripts": {
         "clean": "rm -rf node_modules dist package-lock.json",
         "_shareModelDefs": "mkdir dist; mkdir dist/server; pushd ./src/client; ln -s ../server/model/ .; popd",
-        "_copyJson": "cp ./src/server/config.json ./dist/server",
+        "_makeDemosFolder": "mkdir dist; mkdir dist/client; mkdir dist/client/components; mkdir dist/client/components/demos",
+        "_copyHtml": "cp src/client/components/demos/*.html dist/client/components/demos",
+        "_copyJson": "cp src/server/config.json dist/server",
+        "_generateDocs": "polymer analyze ./dist/client/ > ./dist/client/components/analysis.json",
         "_firstCompilation": "tsc -p ./src/server; tsc -p ./src/client; tsc -p ./src/server-unit; tsc -p ./src/client-unit",
-        "init": "npm run _shareModelDefs; npm run _copyJson; npm run _firstCompilation",
-        "watch": "npm run init; concurrently --names 'server,client,s-unit, json ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan' 'tsc -p ./src/server --watch' 'tsc -p ./src/client --watch' 'tsc -p ./src/server-unit --watch' 'npm run _watchSass'",
+        "init": "npm run _shareModelDefs; npm run _download-bedrock-cert; npm run _copyJson; npm run _firstCompilation; npm run _makeDemosFolder",
+        "watch": "npm run init; concurrently --names 'server,client,s-unit, json ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan' 'tsc -p src/server --watch' 'tsc -p src/client --watch' 'tsc -p src/server-unit --watch' 'npm-watch'",
         "dev": "nodemon -r source-map-support/register dist/server/server.js --watch ./dist/server",
         "debug": "nodemon --inspect -r source-map-support/register dist/server/server.js --watch ./dist/server",
-        "start": "concurrently 'node dist/server/server.js' 'npm run _sass-material' ' polymer analyze ./dist/ > analysis.json'",
+        "start": "node dist/server/server.js",
         "test": "intern config=src/server-unit/intern.json",
         "test-polymer": "polymer test -l chrome -p",
-        "lint": "tslint -t stylish -p src/tsconfig.json",
-        "_watchSass": "npm run _sass -- -w",
-        "_sass-material": "node-sass --include-path=node_modules node_modules/@material/ -r -o dist/client/components/css",
-        "_sass": "node-sass src/-r -o dist/"
+        "lint": "tslint -t stylish -p src/tsconfig.json"
     }
 }

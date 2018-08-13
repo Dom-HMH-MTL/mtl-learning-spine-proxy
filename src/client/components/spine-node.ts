@@ -1,6 +1,6 @@
 import { html, LitElement } from '@polymer/lit-element/lit-element.js';
 import { TemplateResult } from 'lit-html/lit-html';
-import { SpineNode as Model } from '../../model/cc-proxy/SpineNode';
+import { SpineNode as Model } from '../model/cc-proxy/SpineNode';
 
 export enum Mode {
     breadcrumb,

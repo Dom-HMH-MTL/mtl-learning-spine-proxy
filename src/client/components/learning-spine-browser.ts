@@ -2,8 +2,8 @@ import { html, LitElement } from '@polymer/lit-element/lit-element.js';
 import { repeat } from 'lit-html/lib/repeat.js';
 import { until } from 'lit-html/lib/until.js';
 import { TemplateResult } from 'lit-html/lit-html';
-import { Skill } from '../../model/cc-proxy/Skill';
-import { SpineNode } from '../../model/cc-proxy/SpineNode';
+import { Skill } from '../model/cc-proxy/Skill';
+import { SpineNode } from '../model/cc-proxy/SpineNode';
 import { Mode } from './spine-node';
 import './spine-skill';
 
@@ -32,7 +32,7 @@ export async function loadSkill(id: string = 'root'): Promise<Skill> {
  * ## standalone spine browser
  * In typical use, use `<learning-spine-browser>`
  * @param hostUrl
- * @demo /demo/index.html
+ * @demo ./components/demos/index.html
  *
  */
 export class LearningSpineBrowser extends LitElement {

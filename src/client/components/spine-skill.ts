@@ -1,5 +1,5 @@
 import { html, LitElement, TemplateResult } from '@polymer/lit-element/lit-element.js';
-import { Skill as Model } from '../../model/cc-proxy/Skill.js';
+import { Skill as Model } from '../model/cc-proxy/Skill.js';
 export class Skill extends LitElement {
     static get properties(): { [key: string]: string | object } {
         return {
@@ -33,8 +33,8 @@ export class Skill extends LitElement {
 
     protected _render({ disabled, indeterminate, item, selected }: Skill): TemplateResult {
         return html`
-        <link rel="stylesheet" href="node_modules/@material/form-field/dist/mdc.form-field.css" />
-        <link rel="stylesheet" href="node_modules/@material/checkbox/dist/mdc.checkbox.css" />
+        <link rel="stylesheet" href="/node_modules/@material/form-field/dist/mdc.form-field.css" />
+        <link rel="stylesheet" href="/node_modules/@material/checkbox/dist/mdc.checkbox.css" />
         <style>
             .id {
                 color: green;
