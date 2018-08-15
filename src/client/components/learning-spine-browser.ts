@@ -1,9 +1,9 @@
-import { html, LitElement } from '@polymer/lit-element/lit-element.js';
+import { html, LitElement, TemplateResult } from '@polymer/lit-element/lit-element.js';
 import { repeat } from 'lit-html/lib/repeat.js';
 import { until } from 'lit-html/lib/until.js';
-import { TemplateResult } from 'lit-html/lit-html';
 import { Skill } from '../model/cc-proxy/Skill';
 import { SpineNode } from '../model/cc-proxy/SpineNode';
+import { SpineTree } from '../model/cc-proxy/SpineTree';
 import { Mode } from './spine-node';
 import './spine-skill';
 
@@ -26,6 +26,19 @@ export async function loadSkill(id: string = 'root'): Promise<Skill> {
             }
         );
 }
+export async function loadSpineTrees(): Promise<SpineTree[]> {
+    return fetch('/api/v1/cc-proxy/SpineTree', { headers: { accept: 'application/json' }, method: 'GET' })
+        .then((response: Response): any => response.json())
+        .then(
+            (items: any[]): SpineTree[] => {
+                const spines: SpineTree[] = [];
+                for (const item of items) {
+                    spines.push(Object.assign(new SpineTree(), item));
+                }
+                return spines;
+            }
+        );
+}
 
 /**
  * `<learning-spine-browser>`
@@ -39,13 +52,14 @@ export class LearningSpineBrowser extends LitElement {
     static get properties(): { [key: string]: string | object } {
         return {
             breadcrumbs: Array,
+            isSpineSelectorOpen: Boolean,
             preSelectedSkillIds: Object,
             spineTreeId: String
         };
     }
 
     /** The url to get the spine browser */
-    private spineTreeId: string;
+    private spineTreeId: string; // = 'Lx5dbX58EIxwGYCtIIv-Wi-Hk4QA';
     /** The nodes displayed at the top */
     private breadcrumbs: SpineNode[] = [];
     /** initial server request */
@@ -54,14 +68,16 @@ export class LearningSpineBrowser extends LitElement {
     private selectedSkillIds: Set<string> = new Set();
     /** List of skills to pre-check */
     private preSelectedSkillIds: Set<string> = new Set();
+    private isSpineSelectorOpen: boolean = false;
 
-    public constructor(url: string) {
+    public constructor() {
         super();
-        this.spineTreeId = url;
         (this as LitElement).addEventListener('expand-child', async (event: CustomEvent) => {
             event.stopPropagation();
-            const child: SpineNode = await loadSpineNode(this.spineTreeId, event.detail.childId);
-            this.breadcrumbs = [...this.breadcrumbs, child];
+            if (this.spineTreeId) {
+                const child: SpineNode = await loadSpineNode(this.spineTreeId, event.detail.childId);
+                this.breadcrumbs = [...this.breadcrumbs, child];
+            }
         });
 
         (this as LitElement).addEventListener('collapse-node', async (event: CustomEvent) => {
@@ -79,6 +95,7 @@ export class LearningSpineBrowser extends LitElement {
             event.stopPropagation();
             this.onSelected(event);
         });
+        this.preSelectedSkillIds.forEach((id: string) => this.selectedSkillIds.add(id));
     }
     /**
      * Gets the spine browser's selectedSkills
@@ -88,18 +105,8 @@ export class LearningSpineBrowser extends LitElement {
     public getSelectedSkills(): Set<string> {
         return this.selectedSkillIds;
     }
-    protected _createRoot(): any {
-        this.initialState = loadSpineNode(this.spineTreeId).then(
-            (item: SpineNode): void => {
-                this.breadcrumbs.push(item);
-            }
-        );
-        this.preSelectedSkillIds.forEach((id: string) => this.selectedSkillIds.add(id));
 
-        return this;
-    }
-
-    protected _render({ spineTreeId }: LearningSpineBrowser): TemplateResult {
+    protected _render({ spineTreeId, isSpineSelectorOpen }: LearningSpineBrowser): TemplateResult {
         const getLoadingMessage = (): TemplateResult => {
             return html`<span>Loading...</span>`;
         };
@@ -107,7 +114,7 @@ export class LearningSpineBrowser extends LitElement {
         const displayBreadcrumbNode = (node: SpineNode, idx: number): TemplateResult => {
             return html`<spine-node item=${node} mode=${Mode.breadcrumb} position=${idx} setSize=${this.breadcrumbs.length}></spine-node>`;
         };
-        const displayBreadcrumbNodes = (breadcrumbs: SpineNode[]): TemplateResult => {
+        const displayBreadcrumbNodes = (): TemplateResult => {
             return html`<div>${repeat(this.breadcrumbs, displayBreadcrumbNode)}</div>`;
         };
 
@@ -119,7 +126,7 @@ export class LearningSpineBrowser extends LitElement {
         };
 
         const displaySkill = (skill: Skill): TemplateResult => {
-            return html`<li><spine-skill item=${skill} selected=${this.preSelectedSkillIds.has(skill.id)}></spine-skill></li>`;
+            return html`<li><spine-skill item=${skill} selected=${this.selectedSkillIds.has(skill.id)}></spine-skill></li>`;
         };
         const fetchAndDisplaySkill = (skillId: string): Promise<TemplateResult> => {
             return html`${until(loadSkill(skillId).then(displaySkill), getLoadingMessage())}`;
@@ -135,23 +142,62 @@ export class LearningSpineBrowser extends LitElement {
             return html`No child nor skill attached to this node`;
         };
 
-        const fetchAndDisplayNodeAndChildren = async (breadcrumbs: SpineNode[]): Promise<TemplateResult> => {
-            if (breadcrumbs.length === 0) {
-                this.breadcrumbs.push(await loadSpineNode(spineTreeId));
+        const fetchAndDisplayNodeAndChildren = async (): Promise<TemplateResult> => {
+            const display = (): TemplateResult => {
+                const lastNode: SpineNode = this.breadcrumbs[this.breadcrumbs.length - 1];
+                return html`${displayBreadcrumbNodes()} ${displayChildren(lastNode)}`;
+            };
+            if (this.breadcrumbs.length !== 0) {
+                return html`${display()}`;
             }
-            const lastNode: SpineNode = breadcrumbs[breadcrumbs.length - 1];
-            return html`${displayBreadcrumbNodes(breadcrumbs)}${displayChildren(lastNode)}`;
+            return html`${until(
+                loadSpineNode(spineTreeId)
+                    .then((node) => {
+                        this.breadcrumbs.push(node);
+                    })
+                    .then(display),
+                getLoadingMessage()
+            )}`;
         };
 
+        const displaySpine = (spine: SpineTree): TemplateResult => {
+            return html`<li class="mdc-list-item mdc-ripple-upgraded" role="menuitem"
+            on-click="${(e: MouseEvent) => {
+                e.stopPropagation();
+                this.spineTreeId = spine.id;
+                this.isSpineSelectorOpen = false;
+                this.breadcrumbs = [];
+            }}"> ${spine.name} ${spine.id}</li>
+            <li class="mdc-list-divider" role="separator"></li>
+            `;
+        };
         return html`
+        <link rel="stylesheet" href="/node_modules/@material/menu/dist/mdc.menu.css" />
+        <link rel="stylesheet" href="/node_modules/@material/button/dist/mdc.button.css" />
+        <link rel="stylesheet" href="/node_modules/@material/list/dist/mdc.list.css" />
+        <link rel="stylesheet" href="/node_modules/@material/ripple/dist/mdc.ripple.css" />
+
         <style>
-        ul {
-                list-style: none;
-        }
+
+            ul{
+                list-style :none;
+            }
         </style>
 
         <h2>Learning Spine elements</h2>
-        <div>${until(this.initialState.then((): Promise<TemplateResult> => fetchAndDisplayNodeAndChildren(this.breadcrumbs)), getLoadingMessage())}</div>
+        <button class="mdc-button" on-click="${(e: MouseEvent) => {
+            e.stopPropagation();
+            this.isSpineSelectorOpen = !isSpineSelectorOpen;
+        }}">Choose Spine</button>
+
+        <div class="mdc-menu-anchor">
+            <div class$="mdc-menu ${isSpineSelectorOpen ? 'mdc-menu--open' : ''}">
+                <ul class="mdc-menu__items mdc-list" role="menu" aria-hidden="true">
+                    ${loadSpineTrees().then((spines: SpineTree[]) => repeat(spines, (spine) => displaySpine(spine)))}
+                </ul>
+            </div>
+        </div>
+        <div>${this.spineTreeId ? fetchAndDisplayNodeAndChildren() : ''}</div>
         `;
     }
 

@@ -19,7 +19,10 @@
         "@polymer/polymer": "latest",
         "@hmh/nodejs-base-server": "latest",
         "@polymer/lit-element": "latest",
+        "@material/button": "latest",
         "@material/checkbox": "latest",
+        "@material/list": "latest",
+        "@material/menu": "latest",
         "@material/form-field": "latest",
         "node-fetch": "latest"
     },
