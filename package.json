@@ -1,6 +1,6 @@
 {
     "name": "@hmh/learning-spine-proxy",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Micro-service extracting information from the Learning Spine Store and offering a granular REST API.",
     "main": "./dist/server/index.js",
     "module": "dist/client/index.js",
