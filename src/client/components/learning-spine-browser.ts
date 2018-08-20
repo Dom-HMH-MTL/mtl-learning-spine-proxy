@@ -53,7 +53,7 @@ export class LearningSpineBrowser extends LitElement {
         return {
             breadcrumbs: Array,
             isSpineSelectorOpen: Boolean,
-            preSelectedSkillIds: Object,
+            selectedSkillIds: Object,
             spineTreeId: String
         };
     }
@@ -62,12 +62,9 @@ export class LearningSpineBrowser extends LitElement {
     private spineTreeId: string; // = 'Lx5dbX58EIxwGYCtIIv-Wi-Hk4QA';
     /** The nodes displayed at the top */
     private breadcrumbs: SpineNode[] = [];
-    /** initial server request */
-    private initialState: Promise<void>;
     /** List of selected skills in browser */
     private selectedSkillIds: Set<string> = new Set();
-    /** List of skills to pre-check */
-    private preSelectedSkillIds: Set<string> = new Set();
+
     private isSpineSelectorOpen: boolean = false;
 
     public constructor() {
@@ -95,7 +92,6 @@ export class LearningSpineBrowser extends LitElement {
             event.stopPropagation();
             this.onSelected(event);
         });
-        this.preSelectedSkillIds.forEach((id: string) => this.selectedSkillIds.add(id));
     }
     /**
      * Gets the spine browser's selectedSkills
@@ -208,7 +204,7 @@ export class LearningSpineBrowser extends LitElement {
      */
     private onSelected(event: CustomEvent): void {
         event.stopPropagation();
-        event.detail.selected ? this.selectedSkillIds.add(event.detail.item.id) : this.selectedSkillIds.delete(event.detail.item.id);
+        event.detail.selected ? this.selectedSkillIds.add(event.detail.id) : this.selectedSkillIds.delete(event.detail.id);
     }
 }
 

@@ -28,7 +28,5 @@ The following piece of code is the resource definitions used in the [Point-of-Us
 ```javascript
 export * from './pou/ContentItemResource';
 export * from './pou/MetadataAssociationResource';
-export * from '@hmh/learning-spine=proxy/resource/cc-proxy/SkillResource';
-export * from '@hmh/learning-spine=proxy/resource/cc-proxy/SpineNodeResource';
-export * from '@hmh/learning-spine=proxy/resource/cc-proxy/SpineTreeResource';
+export { SkillResource, SpineNodeResource, SpineTreeResource } from '@hmh/learning-spine-proxy';
 ```

@@ -76,7 +76,7 @@ export class Skill extends LitElement {
             new CustomEvent('selected', {
                 bubbles: true,
                 composed: true,
-                detail: { item: this.item, selected: this.selected }
+                detail: { id: this.item.id, selected: this.selected }
             })
         );
     }
