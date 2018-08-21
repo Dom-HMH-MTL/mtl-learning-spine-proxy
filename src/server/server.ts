@@ -5,9 +5,13 @@ import * as appConfig from './config.json';
 import * as appResources from './resource'; // List of all concrete BaseResource classes implementions
 
 export class Server extends Parent {
-    public start(): void {
+    public start(overrides?: { [key: string]: any }): void {
         const resources: { [key: string]: typeof BaseResource } = this.getTypedResourceDefinition();
         const config: { [key: string]: any } = this.getTypedConfig();
+        if (overrides && overrides.port) {
+            const configMode: string = config.activeMode;
+            Object.assign(config[configMode].NodeServer, overrides);
+        }
         super.start(resources, config);
     }
 
@@ -35,5 +39,5 @@ export class Server extends Parent {
 
 /* istanbul ignore if */
 if (process.argv[1].endsWith('/dist/server/server.js')) {
-    new Server().start();
+    new Server().start({ port: process.env.PORT });
 }

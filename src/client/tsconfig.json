@@ -9,6 +9,7 @@
         "paths": {
             "@hmh/nodejs-base-server": ["node_modules/@hmh/nodejs-base-server/dist/client/index"],
             "@hmh/*": ["node_modules/@hmh/*"],
+            "@material/*": ["node_modules/@material/*"],
             "@polymer/*": ["node_modules/@polymer/*"],
             "lit-html/*": ["node_modules/lit-html/*"]
         },

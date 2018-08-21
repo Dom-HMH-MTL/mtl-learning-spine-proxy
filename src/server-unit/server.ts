@@ -14,10 +14,12 @@ suite(__filename.substring(__filename.indexOf('/server-unit/') + '/server-unit/'
     let server: Server;
 
     beforeEach(() => {
+        saveConfig(null); // To give a chance for a setup with a new test configuration
         server = new Server();
     });
 
     afterEach(() => {
+        saveConfig(appConfig);
         server = null;
     });
 
@@ -84,62 +86,106 @@ suite(__filename.substring(__filename.indexOf('/server-unit/') + '/server-unit/'
         });
     });
 
-    test('start()', () => {
-        // @ts-ignore: access to private method
-        const getTypedResourceDefinitionStub: SinonStub = stub(server, 'getTypedResourceDefinition');
-        getTypedResourceDefinitionStub.withArgs().returns({});
-        const config: { [key: string]: any } = {
-            activeMode: 'todo',
-            todo: {
-                NodeServer: {
-                    cacheControlStrategy: {
-                        static: 'whatever'
-                    },
-                    defaultClientContentPath: './index.html',
-                    port: 9876,
-                    staticContentMaxAge: 12345,
-                    staticFolderMapping: {
-                        one: '../one',
-                        two: '../../two'
+    suite('start()', () => {
+        test('default port', () => {
+            // @ts-ignore: access to private method
+            const getTypedResourceDefinitionStub: SinonStub = stub(server, 'getTypedResourceDefinition');
+            getTypedResourceDefinitionStub.withArgs().returns({});
+            const config: { [key: string]: any } = {
+                activeMode: 'todo',
+                todo: {
+                    NodeServer: {
+                        cacheControlStrategy: { static: 'whatever' },
+                        defaultClientContentPath: './index.html',
+                        port: 9876,
+                        staticContentMaxAge: 12345,
+                        staticFolderMapping: { one: '../one', two: '../../two' }
                     }
                 }
-            }
-        };
-        // @ts-ignore: access to private method
-        const getTypedConfigStub: SinonStub = stub(server, 'getTypedConfig');
-        getTypedConfigStub.withArgs().returns(config);
+            };
+            // @ts-ignore: access to private method
+            const getTypedConfigStub: SinonStub = stub(server, 'getTypedConfig');
+            getTypedConfigStub.withArgs().returns(config);
 
-        // @ts-ignore: access to private method
-        const loadDefaultContentStub: SinonStub = stub(server, 'loadDefaultContent');
-        // @ts-ignore: access to private method
-        const addMiddlewaresStub: SinonStub = stub(server, 'addMiddlewares');
-        // @ts-ignore: access to private method
-        const addServerRoutesStub: SinonStub = stub(server, 'addServerRoutes');
-        // @ts-ignore: access to private method
-        const addClientRoutesStub: SinonStub = stub(server, 'addClientRoutes');
-        // @ts-ignore: access to private attribute
-        const listenStub: SinonStub = stub(server.expressApp, 'listen');
-        const mockServer = {
-            address: () => ({ address: '::', port: 5555 })
-        };
-        listenStub.withArgs(9876).returns(mockServer);
+            // @ts-ignore: access to private method
+            const loadDefaultContentStub: SinonStub = stub(server, 'loadDefaultContent');
+            // @ts-ignore: access to private method
+            const addMiddlewaresStub: SinonStub = stub(server, 'addMiddlewares');
+            // @ts-ignore: access to private method
+            const addServerRoutesStub: SinonStub = stub(server, 'addServerRoutes');
+            // @ts-ignore: access to private method
+            const addClientRoutesStub: SinonStub = stub(server, 'addClientRoutes');
+            // @ts-ignore: access to private attribute
+            const listenStub: SinonStub = stub(server.expressApp, 'listen');
+            const mockServer = { address: () => ({ address: '::', port: 5555 }) };
+            listenStub.withArgs(9876).returns(mockServer);
 
-        saveConfig(null); // To leave room for the mock config
-        server.start();
+            server.start();
 
-        assert.isTrue(getTypedResourceDefinitionStub.calledOnce);
-        assert.isTrue(getTypedConfigStub.calledOnce);
-        assert.isTrue(loadDefaultContentStub.calledOnceWithExactly('./index.html'));
-        assert.isTrue(addMiddlewaresStub.calledOnceWithExactly(12345, { one: '../one', two: '../../two' }));
-        assert.isTrue(addServerRoutesStub.calledOnceWithExactly({}));
-        assert.isTrue(addClientRoutesStub.calledOnceWithExactly('todo'));
-        assert.isTrue(listenStub.calledOnceWithExactly(9876));
-        getTypedResourceDefinitionStub.restore();
-        getTypedConfigStub.restore();
-        loadDefaultContentStub.restore();
-        addMiddlewaresStub.restore();
-        addServerRoutesStub.restore();
-        addClientRoutesStub.restore();
-        listenStub.restore();
+            assert.isTrue(getTypedResourceDefinitionStub.calledOnce);
+            assert.isTrue(getTypedConfigStub.calledOnce);
+            assert.isTrue(loadDefaultContentStub.calledOnceWithExactly('./index.html'));
+            assert.isTrue(addMiddlewaresStub.calledOnceWithExactly(12345, { one: '../one', two: '../../two' }));
+            assert.isTrue(addServerRoutesStub.calledOnceWithExactly({}));
+            assert.isTrue(addClientRoutesStub.calledOnceWithExactly('todo'));
+            assert.isTrue(listenStub.calledOnceWithExactly(9876));
+            getTypedResourceDefinitionStub.restore();
+            getTypedConfigStub.restore();
+            loadDefaultContentStub.restore();
+            addMiddlewaresStub.restore();
+            addServerRoutesStub.restore();
+            addClientRoutesStub.restore();
+            listenStub.restore();
+        });
+        test('overriden port', () => {
+            // @ts-ignore: access to private method
+            const getTypedResourceDefinitionStub: SinonStub = stub(server, 'getTypedResourceDefinition');
+            getTypedResourceDefinitionStub.withArgs().returns({});
+            const config: { [key: string]: any } = {
+                activeMode: 'todo',
+                todo: {
+                    NodeServer: {
+                        cacheControlStrategy: { static: 'whatever' },
+                        defaultClientContentPath: './index.html',
+                        port: 9876,
+                        staticContentMaxAge: 12345,
+                        staticFolderMapping: { one: '../one', two: '../../two' }
+                    }
+                }
+            };
+            // @ts-ignore: access to private method
+            const getTypedConfigStub: SinonStub = stub(server, 'getTypedConfig');
+            getTypedConfigStub.withArgs().returns(config);
+
+            // @ts-ignore: access to private method
+            const loadDefaultContentStub: SinonStub = stub(server, 'loadDefaultContent');
+            // @ts-ignore: access to private method
+            const addMiddlewaresStub: SinonStub = stub(server, 'addMiddlewares');
+            // @ts-ignore: access to private method
+            const addServerRoutesStub: SinonStub = stub(server, 'addServerRoutes');
+            // @ts-ignore: access to private method
+            const addClientRoutesStub: SinonStub = stub(server, 'addClientRoutes');
+            // @ts-ignore: access to private attribute
+            const listenStub: SinonStub = stub(server.expressApp, 'listen');
+            const mockServer = { address: () => ({ address: '::', port: 5555 }) };
+            listenStub.withArgs(4321).returns(mockServer);
+
+            server.start({ port: 4321 });
+
+            assert.isTrue(getTypedResourceDefinitionStub.calledOnce);
+            assert.isTrue(getTypedConfigStub.calledOnce);
+            assert.isTrue(loadDefaultContentStub.calledOnceWithExactly('./index.html'));
+            assert.isTrue(addMiddlewaresStub.calledOnceWithExactly(12345, { one: '../one', two: '../../two' }));
+            assert.isTrue(addServerRoutesStub.calledOnceWithExactly({}));
+            assert.isTrue(addClientRoutesStub.calledOnceWithExactly('todo'));
+            assert.isTrue(listenStub.calledOnceWithExactly(4321));
+            getTypedResourceDefinitionStub.restore();
+            getTypedConfigStub.restore();
+            loadDefaultContentStub.restore();
+            addMiddlewaresStub.restore();
+            addServerRoutesStub.restore();
+            addClientRoutesStub.restore();
+            listenStub.restore();
+        });
     });
 });
