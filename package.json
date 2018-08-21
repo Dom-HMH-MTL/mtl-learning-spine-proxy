@@ -1,6 +1,6 @@
 {
     "name": "@hmh/learning-spine-proxy",
-    "version": "1.0.0",
+    "version": "1.0.5",
     "description": "Micro-service extracting information from the Learning Spine Store and offering a granular REST API.",
     "main": "./dist/server/index.js",
     "module": "dist/client/index.js",
@@ -11,7 +11,7 @@
     },
     "author": "Dom Derrien <dom.derrien@hmhco.com>",
     "license": "HMH license",
-    "private": true,
+    "private": false,
     "publishConfig": {
         "registry": "http://npm.tribalnova.com"
     },
@@ -60,7 +60,7 @@
         "_copyJson": "cp src/server/config.json dist/server",
         "_generateDocs": "polymer analyze ./dist/client/ > ./dist/client/components/analysis.json",
         "_firstCompilation": "tsc -p ./src/server; tsc -p ./src/client; tsc -p ./src/server-unit; tsc -p ./src/client-unit",
-        "init": "npm run _shareModelDefs; npm run _download-bedrock-cert; npm run _copyJson; npm run _firstCompilation; npm run _makeDemosFolder",
+        "init": "npm run _shareModelDefs;  npm run _copyJson; npm run _firstCompilation; npm run _makeDemosFolder",
         "watch": "npm run init; concurrently --names 'server,client,s-unit, json ' -c 'bgBlue,black.bgGreen,black.bgYellow,bgRed,bgMagenta,bgCyan' 'tsc -p src/server --watch' 'tsc -p src/client --watch' 'tsc -p src/server-unit --watch' 'npm-watch'",
         "dev": "nodemon -r source-map-support/register dist/server/server.js --watch ./dist/server",
         "debug": "nodemon --inspect -r source-map-support/register dist/server/server.js --watch ./dist/server",

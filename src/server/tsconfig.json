@@ -10,6 +10,7 @@
             "aws-sdk": ["node_modules/aws-sdk"],
             "aws-sdk/*": ["node_modules/aws-sdk/*"]
         },
+        "declaration": true,
         "removeComments": false
     },
     "include": ["../../src/server/**/*.ts", "../typings.d.ts"]
