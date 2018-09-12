@@ -1,6 +1,6 @@
 {
     "name": "@hmh/learning-spine-proxy",
-    "version": "1.0.5",
+    "version": "1.0.7",
     "description": "Micro-service extracting information from the Learning Spine Store and offering a granular REST API.",
     "main": "./dist/server/index.js",
     "module": "dist/client/index.js",
@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "@polymer/polymer": "latest",
-        "@hmh/nodejs-base-server": "latest",
+        "@hmh/nodejs-base-server": "1.1.17",
         "@polymer/lit-element": "latest",
         "@material/button": "latest",
         "@material/checkbox": "latest",

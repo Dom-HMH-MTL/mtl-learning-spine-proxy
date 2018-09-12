@@ -1,4 +1,3 @@
-import { saveConfig } from '@hmh/nodejs-base-server';
 import intern from 'intern';
 
 import { Server } from '../server/server';
@@ -40,9 +39,42 @@ suite(__filename.substring(__filename.indexOf('/server-unit/') + '/server-unit/'
 
     suite('getTypedConfig()', () => {
         test('with mock', () => {
+            const source: { [key: string]: any } = {
+                activeMode: 'todo',
+                todo: {
+                    NodeServer: {
+                        defaultClientContentPath: './index.html',
+                        staticFolderMapping: {
+                            one: '../one',
+                            two: '../../two'
+                        }
+                    }
+                }
+            };
+            const target: { [key: string]: any } = {
+                activeMode: 'tada',
+                todo: {
+                    NodeServer: {
+                        defaultClientContentPath: './index.html',
+                        staticFolderMapping: {
+                            one: '../one',
+                            two: '../../two'
+                        }
+                    }
+                }
+            };
             // @ts-ignore: access to private method
-            const getServerDirectoryStub: SinonStub = stub(server, 'getServerDirectory');
-            getServerDirectoryStub.withArgs().returns('/here');
+            assert.deepEqual(server.getTypedConfig('tada', source), target);
+        });
+        test('with default', () => {
+            // @ts-ignore: access to private method
+            assert.deepEqual(server.getTypedConfig(), appConfig);
+        });
+    });
+
+    suite('updateConfig()', () => {
+        test('without port', () => {
+            // @ts-ignore: access to private method
             const source: { [key: string]: any } = {
                 activeMode: 'todo',
                 todo: {
@@ -68,23 +100,20 @@ suite(__filename.substring(__filename.indexOf('/server-unit/') + '/server-unit/'
                 }
             };
             // @ts-ignore: access to private method
-            assert.deepEqual(server.getTypedConfig(source), target);
-            getServerDirectoryStub.restore();
+            assert.deepEqual(server.updateConfig(source, undefined, '/here'), target);
+            assert.deepEqual((appConfig as any).dev.NodeServer.port, 8686);
         });
-        test('with default', () => {
+        test('with port override', () => {
             // @ts-ignore: access to private method
-            const getServerDirectoryStub: SinonStub = stub(server, 'getServerDirectory');
-            getServerDirectoryStub.withArgs().returns('/here');
-
-            // @ts-ignore: access to private method
-            assert.deepEqual(server.getTypedConfig(), appConfig);
-
-            assert.isTrue(getServerDirectoryStub.calledOnce);
-            getServerDirectoryStub.restore();
+            server.updateConfig(appConfig, '1234567890', '/here');
+            assert.deepEqual((appConfig as any).dev.NodeServer.port, 1234567890);
         });
     });
 
-    test('start()', () => {
+    test('configureAndStart()', () => {
+        // @ts-ignore: access to private method
+        const getServerDirectoryStub: SinonStub = stub(server, 'getServerDirectory');
+        getServerDirectoryStub.withArgs().returns('/here');
         // @ts-ignore: access to private method
         const getTypedResourceDefinitionStub: SinonStub = stub(server, 'getTypedResourceDefinition');
         getTypedResourceDefinitionStub.withArgs().returns({});
@@ -92,54 +121,32 @@ suite(__filename.substring(__filename.indexOf('/server-unit/') + '/server-unit/'
             activeMode: 'todo',
             todo: {
                 NodeServer: {
-                    cacheControlStrategy: {
-                        static: 'whatever'
-                    },
+                    cacheControlStrategy: { static: 'whatever' },
                     defaultClientContentPath: './index.html',
                     port: 9876,
                     staticContentMaxAge: 12345,
-                    staticFolderMapping: {
-                        one: '../one',
-                        two: '../../two'
-                    }
+                    staticFolderMapping: { one: '../one', two: '../../two' }
                 }
             }
         };
         // @ts-ignore: access to private method
         const getTypedConfigStub: SinonStub = stub(server, 'getTypedConfig');
         getTypedConfigStub.withArgs().returns(config);
+        // @ts-ignore: access to private method
+        const updateConfigStub: SinonStub = stub(server, 'updateConfig');
+        const startStub: SinonStub = stub(server, 'start');
 
-        // @ts-ignore: access to private method
-        const loadDefaultContentStub: SinonStub = stub(server, 'loadDefaultContent');
-        // @ts-ignore: access to private method
-        const addMiddlewaresStub: SinonStub = stub(server, 'addMiddlewares');
-        // @ts-ignore: access to private method
-        const addServerRoutesStub: SinonStub = stub(server, 'addServerRoutes');
-        // @ts-ignore: access to private method
-        const addClientRoutesStub: SinonStub = stub(server, 'addClientRoutes');
-        // @ts-ignore: access to private attribute
-        const listenStub: SinonStub = stub(server.expressApp, 'listen');
-        const mockServer = {
-            address: () => ({ address: '::', port: 5555 })
-        };
-        listenStub.withArgs(9876).returns(mockServer);
+        server.configureAndStart();
 
-        saveConfig(null); // To leave room for the mock config
-        server.start();
-
+        assert.isTrue(getServerDirectoryStub.calledOnce);
         assert.isTrue(getTypedResourceDefinitionStub.calledOnce);
         assert.isTrue(getTypedConfigStub.calledOnce);
-        assert.isTrue(loadDefaultContentStub.calledOnceWithExactly('./index.html'));
-        assert.isTrue(addMiddlewaresStub.calledOnceWithExactly(12345, { one: '../one', two: '../../two' }));
-        assert.isTrue(addServerRoutesStub.calledOnceWithExactly({}));
-        assert.isTrue(addClientRoutesStub.calledOnceWithExactly('todo'));
-        assert.isTrue(listenStub.calledOnceWithExactly(9876));
+        assert.isTrue(updateConfigStub.calledOnce);
+        assert.isTrue(startStub.calledOnce);
+        getServerDirectoryStub.restore();
         getTypedResourceDefinitionStub.restore();
         getTypedConfigStub.restore();
-        loadDefaultContentStub.restore();
-        addMiddlewaresStub.restore();
-        addServerRoutesStub.restore();
-        addClientRoutesStub.restore();
-        listenStub.restore();
+        updateConfigStub.restore();
+        startStub.restore();
     });
 });
