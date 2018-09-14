@@ -1,6 +1,6 @@
 {
     "name": "@hmh/learning-spine-proxy",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "Micro-service extracting information from the Learning Spine Store and offering a granular REST API.",
     "main": "./dist/server/index.js",
     "module": "dist/client/index.js",
@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "@polymer/polymer": "latest",
-        "@hmh/nodejs-base-server": "1.1.17",
+        "@hmh/nodejs-base-server": "latest",
         "@polymer/lit-element": "latest",
         "@material/button": "latest",
         "@material/checkbox": "latest",
@@ -40,12 +40,12 @@
         "@polymer/iron-component-page": "next",
         "@polymer/iron-demo-helpers": "latest",
         "polymer-cli": "latest",
-        "@webcomponents/webcomponentsjs": "^2.0.2",
-        "growl": "^1.10.5",
-        "node-sass": "^4.9.0",
+        "@webcomponents/webcomponentsjs": "latest",
+        "growl": "latest",
+        "node-sass": "latest",
         "reflect-metadata": "latest",
-        "typescript": "^2.9.2",
-        "wct-browser-legacy": "^1.0.0"
+        "typescript": "latest",
+        "wct-browser-legacy": "latest"
     },
     "watch": {
         "_copyHtml": "src/client/components/demos/*.*",
