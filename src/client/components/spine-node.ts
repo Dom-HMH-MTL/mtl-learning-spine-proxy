@@ -1,4 +1,4 @@
-import { html, LitElement } from '@polymer/lit-element/lit-element.js';
+import { html, LitElement, property } from '@polymer/lit-element/lit-element.js';
 import { TemplateResult } from 'lit-html/lit-html';
 import { SpineNode as Model } from '../model/cc-proxy/SpineNode';
 
@@ -8,19 +8,15 @@ export enum Mode {
 }
 
 export class SpineNode extends LitElement {
-    static get properties(): { [key: string]: string | object } {
-        return {
-            item: Object,
-            mode: Mode,
-            position: Mode,
-            setSize: Mode
-        };
-    }
     /** Reference spine node model */
-    private item: Model;
-    private mode: Mode;
-    private position: Mode;
-    private setSize: Mode;
+    @property({ type: Object })
+    public item: Model;
+    @property({ type: Object })
+    public mode: Mode;
+    @property({ type: Object })
+    public position: Mode;
+    @property({ type: Object })
+    public setSize: Mode;
 
     constructor(item: Model, mode: Mode, position: number = 0, setSize: number = 0) {
         super();
@@ -30,14 +26,15 @@ export class SpineNode extends LitElement {
         this.setSize = setSize;
     }
 
-    protected _shouldRender(props: SpineNode): boolean {
+    protected shouldUpdate(props: SpineNode): boolean {
         if (typeof props.item === 'string') {
             props.item = JSON.parse(props.item);
         }
         return props.item !== undefined;
     }
 
-    protected _render({ item, mode, position, setSize }: SpineNode): TemplateResult {
+    protected render(): TemplateResult {
+        const { item, mode, position, setSize }: SpineNode = this;
         const collapsibleCss: TemplateResult = html`
         <style>
             .collapsibleNode::after {

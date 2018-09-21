@@ -1,21 +1,17 @@
-import { html, LitElement, TemplateResult } from '@polymer/lit-element/lit-element.js';
+import { html, LitElement, property, TemplateResult } from '@polymer/lit-element/lit-element.js';
 import { Skill as Model } from '../model/cc-proxy/Skill.js';
 export class Skill extends LitElement {
-    static get properties(): { [key: string]: string | object } {
-        return {
-            disabled: Boolean,
-            indeterminate: Boolean,
-            item: Object,
-            selected: Boolean
-        };
-    }
     /** Whether this element is disabled */
+    @property({ type: Boolean })
     public disabled: boolean = false;
     /** Whether this element is indeterminate */
+    @property({ type: Boolean })
     public indeterminate: boolean = false;
     /** Whether this element is selected */
+    @property({ type: Boolean })
     public selected: boolean = false;
     /** Reference spine skill model */
+    @property({ type: Object })
     public item: Model;
 
     constructor(item: Model, selected = false) {
@@ -23,7 +19,7 @@ export class Skill extends LitElement {
         this.item = item;
         this.selected = selected;
     }
-    protected _shouldRender({ item }: Skill): boolean {
+    protected shouldUpdate({ item }: Skill): boolean {
         if (typeof item === 'string') {
             this.item = JSON.parse(item);
         }
@@ -31,7 +27,8 @@ export class Skill extends LitElement {
         return item !== undefined;
     }
 
-    protected _render({ disabled, indeterminate, item, selected }: Skill): TemplateResult {
+    protected render(): TemplateResult {
+        const { disabled, indeterminate, item, selected }: Skill = this;
         return html`
         <link rel="stylesheet" href="/node_modules/@material/form-field/dist/mdc.form-field.css" />
         <link rel="stylesheet" href="/node_modules/@material/checkbox/dist/mdc.checkbox.css" />
