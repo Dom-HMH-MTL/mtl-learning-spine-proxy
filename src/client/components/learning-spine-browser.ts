@@ -103,21 +103,21 @@ export class LearningSpineBrowser extends LitElement {
         };
 
         const displayBreadcrumbNode = (node: SpineNode, idx: number): TemplateResult => {
-            return html`<spine-node item=${node} mode=${Mode.breadcrumb} position=${idx} setSize=${this.breadcrumbs.length}></spine-node>`;
+            return html`<spine-node .item=${node} .mode=${Mode.breadcrumb} .position=${idx} .setSize=${this.breadcrumbs.length}></spine-node>`;
         };
         const displayBreadcrumbNodes = (): TemplateResult => {
             return html`<div>${repeat(this.breadcrumbs, displayBreadcrumbNode)}</div>`;
         };
 
         const displayChild = (child: SpineNode): TemplateResult => {
-            return html`<li><spine-node item=${child} mode=${Mode.childrenList}></spine-node></li>`;
+            return html`<li><spine-node .item=${child} .mode=${Mode.childrenList}></spine-node></li>`;
         };
         const fetchAndDisplayChild = (childId: string): Promise<TemplateResult> => {
             return html`${until(loadSpineNode(spineTreeId, childId).then(displayChild), getLoadingMessage())}`;
         };
 
         const displaySkill = (skill: Skill): TemplateResult => {
-            return html`<li><spine-skill item=${skill} selected=${this.selectedSkillIds.has(skill.id)}></spine-skill></li>`;
+            return html`<li><spine-skill .item=${skill} ?selected=${this.selectedSkillIds.has(skill.id)}></spine-skill></li>`;
         };
         const fetchAndDisplaySkill = (skillId: string): Promise<TemplateResult> => {
             return html`${until(loadSkill(skillId).then(displaySkill), getLoadingMessage())}`;
@@ -153,12 +153,12 @@ export class LearningSpineBrowser extends LitElement {
 
         const displaySpine = (spine: SpineTree): TemplateResult => {
             return html`<li class="mdc-list-item mdc-ripple-upgraded" role="menuitem"
-            on-click="${(e: MouseEvent) => {
-                e.stopPropagation();
-                this.spineTreeId = spine.id;
-                this.isSpineSelectorOpen = false;
-                this.breadcrumbs = [];
-            }}"> ${spine.name} ${spine.id}</li>
+             @click="${(e: MouseEvent) => {
+                 e.stopPropagation();
+                 this.spineTreeId = spine.id;
+                 this.isSpineSelectorOpen = false;
+                 this.breadcrumbs = [];
+             }}"> ${spine.name} ${spine.id}</li>
             <li class="mdc-list-divider" role="separator"></li>
             `;
         };
@@ -176,13 +176,13 @@ export class LearningSpineBrowser extends LitElement {
         </style>
 
         <h2>Learning Spine elements</h2>
-        <button class="mdc-button" on-click="${(e: MouseEvent) => {
+        <button class="mdc-button" @click="${(e: MouseEvent) => {
             e.stopPropagation();
             this.isSpineSelectorOpen = !isSpineSelectorOpen;
         }}">Choose Spine</button>
 
         <div class="mdc-menu-anchor">
-            <div class$="mdc-menu ${isSpineSelectorOpen ? 'mdc-menu--open' : ''}">
+            <div class="mdc-menu ${isSpineSelectorOpen ? 'mdc-menu--open' : ''}">
                 <ul class="mdc-menu__items mdc-list" role="menu" aria-hidden="true">
                     ${loadSpineTrees().then((spines: SpineTree[]) => repeat(spines, (spine: any) => displaySpine(spine)))}
                 </ul>

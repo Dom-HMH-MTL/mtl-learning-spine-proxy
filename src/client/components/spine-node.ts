@@ -50,13 +50,13 @@ export class SpineNode extends LitElement {
             if (position + 1 < setSize) {
                 return html`${collapsibleCss}
                 <span class="collapsibleNode">
-                    <a href="#" on-click="${this.collapseNode.bind(this)}">${item.name}</a>
+                    <a href="#" @click="${this.collapseNode.bind(this)}">${item.name}</a>
                 </span>`;
             }
             return html`${collapsibleCss}
             <span class="lastNode">${item.name}</span>`;
         }
-        return html`<a href="#" on-click="${this.expandChild.bind(this)}">${item.name}</a>`;
+        return html`<a href="#" @click="${this.expandChild.bind(this)}">${item.name}</a>`;
     }
 
     /**

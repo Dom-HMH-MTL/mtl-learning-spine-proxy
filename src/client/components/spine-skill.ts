@@ -42,7 +42,7 @@ export class Skill extends LitElement {
             <div class="mdc-checkbox" >
                 <input type="checkbox"
                     class="mdc-checkbox__native-control"
-                    on-click="${(e: Event) => this.onSelect(e)}"
+                    @click="${(e: Event) => this.onSelect(e)}"
                     checked="${selected}"
                     disabled="${disabled}"
                     indeterminate="${indeterminate}"/>
