@@ -26,11 +26,11 @@ export class SpineNode extends LitElement {
         this.setSize = setSize;
     }
 
-    protected shouldUpdate(props: SpineNode): boolean {
-        if (typeof props.item === 'string') {
-            props.item = JSON.parse(props.item);
+    protected shouldUpdate(): boolean {
+        if (typeof this.item === 'string') {
+            this.item = JSON.parse(this.item);
         }
-        return props.item !== undefined;
+        return this.item !== undefined;
     }
 
     protected render(): TemplateResult {
@@ -50,13 +50,13 @@ export class SpineNode extends LitElement {
             if (position + 1 < setSize) {
                 return html`${collapsibleCss}
                 <span class="collapsibleNode">
-                    <a href="#" @click="${this.collapseNode.bind(this)}">${item.name}</a>
+                    <a href="#" @click=${this.collapseNode.bind(this)}>${item.name}</a>
                 </span>`;
             }
             return html`${collapsibleCss}
             <span class="lastNode">${item.name}</span>`;
         }
-        return html`<a href="#" @click="${this.expandChild.bind(this)}">${item.name}</a>`;
+        return html`<a href="#" @click=${this.expandChild.bind(this)}>${item.name}</a>`;
     }
 
     /**

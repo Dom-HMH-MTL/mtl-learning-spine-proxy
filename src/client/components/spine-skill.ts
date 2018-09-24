@@ -19,12 +19,12 @@ export class Skill extends LitElement {
         this.item = item;
         this.selected = selected;
     }
-    protected shouldUpdate({ item }: Skill): boolean {
-        if (typeof item === 'string') {
-            this.item = JSON.parse(item);
+    protected shouldUpdate(): boolean {
+        if (typeof this.item === 'string') {
+            this.item = JSON.parse(this.item);
         }
 
-        return item !== undefined;
+        return this.item !== undefined;
     }
 
     protected render(): TemplateResult {
@@ -42,10 +42,10 @@ export class Skill extends LitElement {
             <div class="mdc-checkbox" >
                 <input type="checkbox"
                     class="mdc-checkbox__native-control"
-                    @click="${(e: Event) => this.onSelect(e)}"
-                    checked="${selected}"
-                    disabled="${disabled}"
-                    indeterminate="${indeterminate}"/>
+                    @click=${(e: Event) => this.onSelect(e)}
+                    ?checked=${selected}
+                    ?disabled=${disabled}
+                    ?indeterminate=${indeterminate} />
                 <div class="mdc-checkbox__background">
                     <svg class="mdc-checkbox__checkmark"
                         viewBox="0 0 24 24">
