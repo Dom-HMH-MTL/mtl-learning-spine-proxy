@@ -13,10 +13,10 @@ export class SpineNode extends LitElement {
     public item: Model;
     @property({ type: Object })
     public mode: Mode;
-    @property({ type: Object })
-    public position: Mode;
-    @property({ type: Object })
-    public setSize: Mode;
+    @property({ type: Number })
+    public position: number;
+    @property({ type: Number })
+    public setSize: number;
 
     constructor(item: Model, mode: Mode, position: number = 0, setSize: number = 0) {
         super();

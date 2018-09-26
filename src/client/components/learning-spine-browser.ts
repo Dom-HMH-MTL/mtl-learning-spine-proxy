@@ -91,7 +91,6 @@ export class LearningSpineBrowser extends LitElement {
         });
 
         loadSpineTrees().then((spines: SpineTree[]) => {
-            console.log('SPINES ARE', spines);
             this.spines = spines;
         });
     }

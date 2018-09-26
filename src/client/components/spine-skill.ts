@@ -2,13 +2,13 @@ import { html, LitElement, property, TemplateResult } from '@polymer/lit-element
 import { Skill as Model } from '../model/cc-proxy/Skill.js';
 export class Skill extends LitElement {
     /** Whether this element is disabled */
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: true })
     public disabled: boolean = false;
     /** Whether this element is indeterminate */
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: true })
     public indeterminate: boolean = false;
     /** Whether this element is selected */
-    @property({ type: Boolean })
+    @property({ type: Boolean, reflect: true })
     public selected: boolean = false;
     /** Reference spine skill model */
     @property({ type: Object })
