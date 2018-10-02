@@ -1,4 +1,4 @@
-import { html, LitElement } from '@polymer/lit-element/lit-element.js';
+import { html, LitElement, property } from '@polymer/lit-element/lit-element.js';
 import { TemplateResult } from 'lit-html/lit-html';
 import { SpineNode as Model } from '../model/cc-proxy/SpineNode';
 
@@ -8,19 +8,15 @@ export enum Mode {
 }
 
 export class SpineNode extends LitElement {
-    static get properties(): { [key: string]: string | object } {
-        return {
-            item: Object,
-            mode: Mode,
-            position: Mode,
-            setSize: Mode
-        };
-    }
     /** Reference spine node model */
-    private item: Model;
-    private mode: Mode;
-    private position: Mode;
-    private setSize: Mode;
+    @property({ type: Object })
+    public item: Model;
+    @property({ type: Object })
+    public mode: Mode;
+    @property({ type: Number })
+    public position: number;
+    @property({ type: Number })
+    public setSize: number;
 
     constructor(item: Model, mode: Mode, position: number = 0, setSize: number = 0) {
         super();
@@ -30,14 +26,15 @@ export class SpineNode extends LitElement {
         this.setSize = setSize;
     }
 
-    protected _shouldRender(props: SpineNode): boolean {
-        if (typeof props.item === 'string') {
-            props.item = JSON.parse(props.item);
+    protected shouldUpdate(): boolean {
+        if (typeof this.item === 'string') {
+            this.item = JSON.parse(this.item);
         }
-        return props.item !== undefined;
+        return this.item !== undefined;
     }
 
-    protected _render({ item, mode, position, setSize }: SpineNode): TemplateResult {
+    protected render(): TemplateResult {
+        const { item, mode, position, setSize }: SpineNode = this;
         const collapsibleCss: TemplateResult = html`
         <style>
             .collapsibleNode::after {
@@ -53,13 +50,13 @@ export class SpineNode extends LitElement {
             if (position + 1 < setSize) {
                 return html`${collapsibleCss}
                 <span class="collapsibleNode">
-                    <a href="#" on-click="${this.collapseNode.bind(this)}">${item.name}</a>
+                    <a href="#" @click=${this.collapseNode.bind(this)}>${item.name}</a>
                 </span>`;
             }
             return html`${collapsibleCss}
             <span class="lastNode">${item.name}</span>`;
         }
-        return html`<a href="#" on-click="${this.expandChild.bind(this)}">${item.name}</a>`;
+        return html`<a href="#" @click=${this.expandChild.bind(this)}>${item.name}</a>`;
     }
 
     /**
