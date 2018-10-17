@@ -1,0 +1,13 @@
+{
+    "modules": {
+        "@polymer/lit-element/lit-element": "/node_modules/@polymer/lit-element/lit-element.js",
+        "lit-html": "/node_modules/lit-html/lit-html.js",
+        "lit-html/lib/shady-render": "/node_modules/lit-html/lib/shady-render.js",
+        "lit-html/lit-html": "/node_modules/lit-html/lit-html.js",
+        "lit-html/directives/repeat": "/node_modules/lit-html/directives/repeat.js",
+        "lit-html/directives/until": "/node_modules/lit-html/directives/until.js",
+        "@hmh/nodejs-base-server": "/node_modules/@hmh/nodejs-base-server/dist/client/index.js",
+        "reflect-metadata": "/node_modules/reflect-metadata/Reflect.js",
+        "@polymer/lit-element/lit-element.js": "/node_modules/@polymer/lit-element/lit-element.js"
+    }
+}

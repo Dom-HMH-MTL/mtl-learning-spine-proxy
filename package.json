@@ -67,6 +67,7 @@
         "start": "node dist/server/server.js",
         "test": "intern config=src/server-unit/intern.json",
         "test-polymer": "polymer test -l chrome -p",
-        "lint": "tslint -t stylish -p src/tsconfig.json"
+        "lint": "tslint -t stylish -p src/tsconfig.json",
+        "map": "nodejs-base-server -c dist/server/config.json -M dist/client/**/*.js"
     }
 }
