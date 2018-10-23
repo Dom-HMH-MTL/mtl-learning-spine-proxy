@@ -1,6 +1,6 @@
 {
     "name": "@hmh/learning-spine-proxy",
-    "version": "1.0.8",
+    "version": "2.0.0",
     "description": "Micro-service extracting information from the Learning Spine Store and offering a granular REST API.",
     "main": "./dist/server/index.js",
     "module": "dist/client/index.js",
@@ -67,6 +67,7 @@
         "start": "node dist/server/server.js",
         "test": "intern config=src/server-unit/intern.json",
         "test-polymer": "polymer test -l chrome -p",
-        "lint": "tslint -t stylish -p src/tsconfig.json"
+        "lint": "tslint -t stylish -p src/tsconfig.json",
+        "map": "nodejs-base-server -c dist/server/config.json -M dist/client/**/*.js"
     }
 }
